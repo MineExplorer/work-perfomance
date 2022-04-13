@@ -18,7 +18,10 @@ namespace Application.ViewModels
             TechStack = employee.TechStack;
             PermissionLevel = (int)employee.PermissionLevel;
             Created = employee.Created;
-            Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project)).ToArray();
+            if (employee.ProjectEmployees != null)
+            {
+                Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project)).ToArray();
+            }
         }
 
         public EmployeeDto()

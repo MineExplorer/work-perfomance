@@ -47,7 +47,7 @@
             }
             catch (Exception ex)
             {
-                return InternalErrorResult(ex.InnerException);
+                return InternalErrorResult(ex);
             }
         }
 
@@ -60,7 +60,7 @@
             }
             catch (Exception ex)
             {
-                return InternalErrorResult(ex.InnerException);
+                return InternalErrorResult(ex);
             }
         }
 
@@ -77,7 +77,7 @@
             }
             catch (Exception ex)
             {
-                return InternalErrorResult(ex.InnerException);
+                return InternalErrorResult(ex);
             }
         }
 
@@ -91,7 +91,7 @@
             }
             catch (Exception ex)
             {
-                return InternalErrorResult(ex.InnerException);
+                return InternalErrorResult(ex);
             }
         }
 

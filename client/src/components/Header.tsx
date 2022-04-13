@@ -10,7 +10,7 @@ export default function AppHeader() {
 				display: "inline-block"
 			}}>
 				<li><NavLink to="/timetable">Тайм-репорты</NavLink></li>
-				<li><NavLink to="/stats">Статистика</NavLink></li>
+				<li><NavLink to="/dashboard">Статистика</NavLink></li>
 				<li><NavLink to="/employees">Сотрудники</NavLink></li>
 				<li><NavLink to="/login">Выход</NavLink></li>
 			</ul>

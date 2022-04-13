@@ -8,12 +8,13 @@ import { Employee, TimeInterval, State } from '../../data';
 import Header from '../../components/Header';
 import DiagramHeader from '../../components/Dashboard/DiagramHeader';
 import { fetchFunctionApi } from '../../helpers';
+import { SelectProject } from '../../components/Select/SelectProject';
 
 export default function DashboardPage() {
 	const employeeId = 1;
 	const dateRange = 7;
 	const dateEnd = new Date(Date.now());
-	const dateStart = addDays(dateEnd, -dateRange);
+	const dateStart = addDays(dateEnd, -dateRange + 1);
 	const [employeeData, setEmployeeData] = useState({} as Employee);
 	const [data, setData] = useState([]);
 	const [state, setState] = useState(State.Loading);
@@ -48,21 +49,9 @@ export default function DashboardPage() {
 	if (state === State.Error) {
 		return <Typography>Server unavailable</Typography>
 	}
-
-	let projects = [];//DataContainer.getEmployeeProjects(employee.id);
-
-	let projectId = 0;
 	
 	let totalTime = 0;
 	let dayWorked = 0;
-
-	function generateOptions(): JSX.Element[] {
-		const renderData = [];
-		for (let project of projects) {
-			renderData.push(<option id={project.id.toString()}>{project.name}</option>);
-		}
-		return renderData;
-	}
 
 	const statData = [];
 	for (let i = 0; i < data.length; i++) {
@@ -88,20 +77,29 @@ export default function DashboardPage() {
 		</LineChart>
 	);
 
+	function onProjectChange(event: React.ChangeEvent<HTMLInputElement>) {
+	}
+
 	return (
 		<div>
 			<Header/>
 			<div className="mainbox">
 				<h3>Статистика сотрудника {employeeData.fullName}</h3>
 				<div>
-					<select className="selectMenu">
-						{generateOptions()}
-					</select>
-					<div style={{position: "relative", top: -40}}>
-						<DiagramHeader dateStart={dateStart.toLocaleDateString()} dateEnd={dateEnd.toLocaleDateString()}/>
+					
+					<div style={{position: "relative"}}>
+						<div style={{position: "relative", display: "flex", padding: 10}}>
+							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
+							<SelectProject projects={employeeData.projects} onChange={onProjectChange}/>
+							<select style={{marginLeft: '30px'}}>
+								<option>Последние 7 дней</option>
+								<option>Последниe 14 дней</option>
+								<option>Последние 30 дней</option>
+							</select>
+						</div>
 						{renderLineChart}
 						<p>Итоговое время: {totalTime} часов</p>
-						<p>Среднее в день: {totalTime / (dayWorked || 1)} часов</p>
+						<p>Среднее в день: {+(totalTime / (dayWorked || 1)).toPrecision(2)} часов</p>
 					</div>
 				</div>
 			</div>

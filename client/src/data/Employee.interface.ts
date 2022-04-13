@@ -22,6 +22,7 @@ export interface Employee {
     experience: number;
     techStack: string;
     created: string;
+    projects: Project[];
 }
 
 export interface Project {

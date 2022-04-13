@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
 
         public Employee GetEmployee(int id)
         {
-            Employee employee = context.Employees.Find(id);
+            Employee employee = GetEmployees().Where(e => e.Id == id).FirstOrDefault();
             return employee;
         }
 
