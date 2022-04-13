@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
 
         public IQueryable<Employee> GetEmployees()
         {
-            return context.Employees.AsNoTracking();
+            return context.Employees.AsNoTracking().Include(e => e.ProjectEmployees).ThenInclude(e => e.Project);
         }
 
         public Employee InsertEmployee(Employee employee)

@@ -1,8 +1,10 @@
-﻿namespace Application.ViewModels
-{
-    using Domain.Models;
-    using System;
+﻿using System;
+using System.Linq;
+using Application.DTO.Responce;
+using Domain.Models;
 
+namespace Application.ViewModels
+{
     public class EmployeeDto
     {
         public EmployeeDto(Employee employee)
@@ -16,6 +18,7 @@
             TechStack = employee.TechStack;
             PermissionLevel = (int)employee.PermissionLevel;
             Created = employee.Created;
+            Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project)).ToArray();
         }
 
         public EmployeeDto()
@@ -39,5 +42,7 @@
         public string TechStack { get; set; }
 
         public DateTime Created { get; set; }
+
+        public ProjectDto[] Projects { get; set; }
     }
 }
