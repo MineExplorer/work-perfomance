@@ -28,5 +28,6 @@ export interface Employee {
 export interface Project {
     id: number;
     title: string;
+    employees: Employee[];
 }
 

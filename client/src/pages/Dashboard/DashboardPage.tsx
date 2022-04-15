@@ -71,7 +71,7 @@ export default function DashboardPage() {
 							<SelectProject projects={employeeData.projects} onChange={onProjectChange}/>
 							<SelectDateRange onChange={onDateRangeChange}/>
 						</div>
-						<TimeStats employeeId={employeeId} projectId={selectedProject} dateStart={dateStart} dateEnd={dateEnd}/>
+						<TimeStats employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
 					</div>
 				</div>
 			</div>

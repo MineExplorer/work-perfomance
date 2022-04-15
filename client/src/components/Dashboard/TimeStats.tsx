@@ -1,9 +1,10 @@
-import addDays from 'date-fns/addDays';
+import {addDays, differenceInDays} from 'date-fns';
 import { useEffect, useState } from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { Employee } from '../../data';
 import { fetchFunctionApi } from '../../helpers';
 
-export default function TimeStats(props: {employeeId: number, projectId: number, dateStart: Date, dateEnd: Date}) {
+export default function TimeStats(props: {employee: Employee, dateStart: Date, dateEnd: Date}) {
     const [timeData, setTimeData] = useState([]);
 
     useEffect(() => {
@@ -11,6 +12,7 @@ export default function TimeStats(props: {employeeId: number, projectId: number,
 		.then(
 			(result) => {
 				setTimeData(result);
+                console.log(result);
 			}
 		)
 		.catch(error => {
@@ -19,21 +21,43 @@ export default function TimeStats(props: {employeeId: number, projectId: number,
 	}, [props]);
 
     async function loadData() {
-		return await fetchFunctionApi<number[]>(`/TimeInterval/stats?employeeId=${props.employeeId}&projectId=${props.projectId}&dateStart=${props.dateStart.toLocaleDateString()}&dateEnd=${props.dateEnd.toLocaleDateString()}`);
+        const timeData = [];
+        for (var project of props.employee.projects) {
+            const dateStart = props.dateStart.toLocaleDateString();
+            const dateEnd = props.dateEnd.toLocaleDateString();
+		    timeData.push(await fetchFunctionApi<number[]>(`/TimeInterval/stats?employeeId=${props.employee.id}&projectId=${project.id}&dateStart=${dateStart}&dateEnd=${dateEnd}`));
+        }
+        return timeData;
 	}
     
     let totalTime = 0;
-	let dayWorked = 0;
+	let daysWorked = 0;
 
 	const statData = [];
-	for (let i = 0; i < timeData.length; i++) {
-		const timeHours = timeData[i];
-		statData.push({name: addDays(props.dateStart, i).toLocaleDateString(), hours: timeHours});
-		if (timeHours > 0) {
-			totalTime += timeHours;
-			dayWorked++;
-		}
-	}
+    if (timeData.length > 0) {
+        const dateRange = timeData[0].length;
+        for (let i = 0; i < dateRange; i++) {
+            let dayData = {name: addDays(props.dateStart, i).toLocaleDateString()};
+            let worked = false;
+            for (let j = 0; j < timeData.length; j++) {
+                const timeHours = timeData[j][i];
+                dayData['h' + j] = timeHours;
+                if (timeHours > 0) {
+                    totalTime += timeHours;
+                    worked = true;
+                }
+            }
+            statData.push(dayData);
+            if (worked) {
+                daysWorked++;
+            }
+        }
+    }
+    console.log(statData);
+
+    const renderLines = timeData.map((data, index) => {
+        return <Line type="monotone" dataKey={'h' + index} stroke="#006eff" />
+    });
 
     return (
         <div>
@@ -42,14 +66,14 @@ export default function TimeStats(props: {employeeId: number, projectId: number,
                 left: 20,
                 right: 20
             }}>
-                <Line type="monotone" dataKey="hours" stroke="#006eff" />
+                {renderLines}
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
             </LineChart>
             <p>Итоговое время: {totalTime} часов</p>
-            <p>Среднее в день: {+(totalTime / (dayWorked || 1)).toPrecision(2)} часов</p>
+            <p>Среднее в день: {+(totalTime / (daysWorked || 1)).toPrecision(2)} часов</p>
         </div>
     );
 }

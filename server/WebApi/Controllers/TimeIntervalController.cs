@@ -46,6 +46,19 @@
                 return InternalErrorResult(ex);
             }
         }
+        
+        [HttpGet("teamstats")]
+        public ActionResult<List<object>> GetTeamStatsForPeriod(int projectId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(_timeIntervalService.GetTeamStatsForPeriod(projectId, dateStart, dateEnd));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
         /*
         [HttpGet("{id}")]
         public ActionResult<TimeIntervalDto> Get(int id)

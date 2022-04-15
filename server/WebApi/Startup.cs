@@ -36,8 +36,10 @@ namespace WebApi
 
             services.AddScoped<EmployeeService>();
             services.AddScoped<TimeIntervalService>();
+            services.AddScoped<ProjectService>();
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<TimeIntervalRepository>();
+            services.AddScoped<ProjectRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

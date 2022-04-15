@@ -3,18 +3,19 @@ import { Box } from 'grommet';
 import MaterialUIBox from '@mui/material/Box';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { Employee, TimeInterval, State } from '../../data';
+import { Employee, Project, State } from '../../data';
 import Header from '../../components/Header';
 import { fetchFunctionApi } from '../../helpers';
+import { SelectProject, SelectDateRange } from '../../components/Select';
+import TeamTimeStats from '../../components/Dashboard/TeamTimeStats';
 
 export default function TeamDashboardPage() {
-	const employeeId = 1;
-	const dateRange = 7;
-	const dateEnd = new Date(Date.now());
-	const dateStart = addDays(dateEnd, -dateRange);
-	const [employeeData, setEmployeeData] = useState({} as Employee);
-	const [data, setData] = useState([]);
+	const projectId = 2;
+	const defaultDateRange = 7;
+	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
+	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
+
+	const [projectData, seProjectData] = useState({} as Project);
 	const [state, setState] = useState(State.Loading);
 
 	useEffect(() => {
@@ -23,8 +24,7 @@ export default function TeamDashboardPage() {
 		loadData()
 		.then(
 			(result) => {
-				setEmployeeData(result[0] as Employee);
-				setData(result[1] as number[]);
+				seProjectData(result);
 				setState(State.Loaded);
 			}
 		)
@@ -33,12 +33,10 @@ export default function TeamDashboardPage() {
 		});
 	});
 
-	const loadData = async () => {
-		return [
-			await fetchFunctionApi<Employee>(`/Employee/${employeeId}`),
-			await fetchFunctionApi<number[]>(`/TimeInterval/stats?employeeId=${employeeId}&projectId=1&dateStart=${dateStart.toLocaleDateString()}&dateEnd=${dateEnd.toLocaleDateString()}`)
-		]
+	async function loadData() {
+		return await fetchFunctionApi<Project>(`/Project/${projectId}`);
 	}
+
 
 	if (state === State.Loading) {
 		return <Typography>Loading...</Typography>
@@ -48,58 +46,23 @@ export default function TeamDashboardPage() {
 		return <Typography>Server unavailable</Typography>
 	}
 
-	let projects = [];
-
-	let projectId = 0;
-	
-	let totalTime = 0;
-	let dayWorked = 0;
-
-	function generateOptions(): JSX.Element[] {
-		const renderData = [];
-		for (let project of projects) {
-			renderData.push(<option id={project.id.toString()}>{project.title}</option>);
-		}
-		return renderData;
+	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const range = parseInt(event.target.value);
+		setDateStart(addDays(dateEnd, -range + 1));
 	}
-
-	const statData = [];
-	for (let i = 0; i < data.length; i++) {
-		const timeHours = data[i];
-		statData.push({name: addDays(dateStart, i).toLocaleDateString(), hours: timeHours});
-		if (timeHours > 0) {
-			totalTime += timeHours;
-			dayWorked++;
-		}
-	}
-
-	const renderLineChart = (
-		<LineChart width={700} height={380} data={statData} margin={{
-			top: 20,
-			left: 20,
-			right: 20,
-		}}>
-			<Line type="monotone" dataKey="hours" stroke="#006eff" />
-			<CartesianGrid stroke="#ccc" />
-			<XAxis dataKey="name" />
-			<YAxis />
-			<Tooltip />
-		</LineChart>
-	);
 
 	return (
 		<div>
 			<Header/>
 			<div className="mainbox">
-				<h3>Статистика сотрудника {employeeData.fullName}</h3>
+				<h3>Статистика проекта {projectData.title}</h3>
 				<div>
-					<select className="selectMenu">
-						{generateOptions()}
-					</select>
-					<div style={{position: "relative", top: -40}}>
-						{renderLineChart}
-						<p>Итоговое время: {totalTime} часов</p>
-						<p>Среднее в день: {totalTime / (dayWorked || 1)} часов</p>
+					<div style={{position: "relative"}}>
+						<div style={{position: "relative", display: "flex", padding: 10}}>
+							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
+							<SelectDateRange onChange={onDateRangeChange}/>
+						</div>
+						<TeamTimeStats project={projectData} dateStart={dateStart} dateEnd={dateEnd}/>
 					</div>
 				</div>
 			</div>

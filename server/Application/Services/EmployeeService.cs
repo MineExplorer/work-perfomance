@@ -20,7 +20,7 @@
 
         public List<EmployeeDto> GetEmployees()
         {
-            return _employeeRepository.GetEmployees().Select(x => new EmployeeDto(x)).ToList();
+            return _employeeRepository.GetEmployees().Select(x => new EmployeeDto(x, false)).ToList();
         }
 
         public EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee)

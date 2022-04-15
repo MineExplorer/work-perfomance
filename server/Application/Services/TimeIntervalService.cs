@@ -29,12 +29,38 @@
             DateTime dateStart = DateTime.Parse(rawDateStart);
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
             var dayIntervals = new List<float>();
-            var intervals = _timeIntervalRepository.GetTimeIntervalsForEmployeeAndProject(employeeId, projectId);
+            var intervals = _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd);
             for (DateTime date = dateStart; date <= dateEnd; date = date.AddDays(1))
             {
                 float sum = 0;
                 intervals.Where(i => i.Date == date).ToList().ForEach(i => sum += i.Duration);
                 dayIntervals.Add(sum);
+            }
+
+            return dayIntervals;
+        }
+
+        public List<Dictionary<int, float>> GetTeamStatsForPeriod(int projectId, string rawDateStart, string rawDateEnd)
+        {
+            DateTime dateStart = DateTime.Parse(rawDateStart);
+            DateTime dateEnd = DateTime.Parse(rawDateEnd);
+            var dayIntervals = new List<Dictionary<int, float>>();
+            var intervals = _timeIntervalRepository.GetTimeIntervalsForProject(projectId, dateStart, dateEnd);
+            for (DateTime date = dateStart; date <= dateEnd; date = date.AddDays(1))
+            {
+                var dict = new Dictionary<int, float>();
+                intervals.Where(i => i.Date == date).ToList().ForEach(i =>
+                {
+                    if (dict.ContainsKey(i.EmployeeId))
+                    {
+                        dict[i.EmployeeId] = dict[i.EmployeeId] + i.Duration;
+                    }
+                    else
+                    {
+                        dict.Add(i.EmployeeId, i.Duration);
+                    }
+                });
+                dayIntervals.Add(dict);
             }
 
             return dayIntervals;

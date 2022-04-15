@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Domain.Models;
 using Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,16 @@ namespace Infrastructure.Repositories
                 Include(e => e.WorkType);
         }
         
-        public IQueryable<TimeInterval> GetTimeIntervalsForEmployeeAndProject(int employeeId, int projectId)
+        public IQueryable<TimeInterval> GetTimeIntervalsForEmployee(int employeeId, DateTime startDate, DateTime endDate)
         {
             return context.TimeIntervals.AsNoTracking().
-                Where(e => e.EmployeeId == employeeId && e.ProjectId == projectId);
+                Where(e => e.EmployeeId == employeeId && e.Date >= startDate && e.Date <= endDate);
+        }
+        
+        public IQueryable<TimeInterval> GetTimeIntervalsForProject(int projectId, DateTime startDate, DateTime endDate)
+        {
+            return context.TimeIntervals.AsNoTracking().
+                Where(e => e.ProjectId == projectId && e.Date >= startDate && e.Date <= endDate);
         }
 
         public TimeInterval InsertTimeInterval(TimeInterval timeInterval)
