@@ -11,8 +11,9 @@ export default function AppHeader() {
 			}}>
 				<li><NavLink to="/timetable">Тайм-репорты</NavLink></li>
 				<li><NavLink to="/dashboard">Статистика</NavLink></li>
+				<li><NavLink to="/teamdashboard">Команды</NavLink></li>
 				<li><NavLink to="/employees">Сотрудники</NavLink></li>
-				<li><NavLink to="/login">Выход</NavLink></li>
+				{/*<li><NavLink to="/login">Выход</NavLink></li>*/}
 			</ul>
 		</>
 	);

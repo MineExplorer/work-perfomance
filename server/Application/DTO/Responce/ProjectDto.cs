@@ -1,7 +1,6 @@
-﻿using System;
-using Domain.Models;
+﻿using Domain.Models;
 
-namespace Application.DTO.Responce
+namespace Application.ViewModels
 {
     public class ProjectDto
     {

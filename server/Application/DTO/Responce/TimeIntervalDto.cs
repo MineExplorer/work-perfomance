@@ -1,8 +1,7 @@
-﻿namespace Application.ViewModels
-{
-    using Domain.Models;
-    using System;
+﻿using Domain.Models;
 
+namespace Application.ViewModels
+{
     public class TimeIntervalDto
     {
         public TimeIntervalDto(TimeInterval timeInterval)

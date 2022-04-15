@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Application.DTO.Responce;
 using Domain.Models;
 
 namespace Application.ViewModels

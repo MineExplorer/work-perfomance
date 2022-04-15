@@ -21,6 +21,8 @@
 
         public DbSet<WorkType> WorkTypes { get; set; }
 
+        public DbSet<EmployeeFeedback> EmployeeFeedbacks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProjectEmployee>().HasKey(pe => new { pe.ProjectId, pe.EmployeeId });

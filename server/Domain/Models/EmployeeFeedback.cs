@@ -3,9 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
-    public class EmployeeAssessment
+    public class EmployeeFeedback
     {
         public int Id { get; set; }
+
+        public int EmployeeId { get; set; }
+
+        public Employee Employee { get; set; }
 
         public float ClientAssesment { get; set; }
 
