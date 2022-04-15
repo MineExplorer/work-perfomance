@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { Employee, TimeInterval, State } from '../../data';
 import Header from '../../components/Header';
-import DiagramHeader from '../../components/Dashboard/DiagramHeader';
 import { fetchFunctionApi } from '../../helpers';
 
 export default function TeamDashboardPage() {
@@ -49,7 +48,7 @@ export default function TeamDashboardPage() {
 		return <Typography>Server unavailable</Typography>
 	}
 
-	let projects = [];//DataContainer.getEmployeeProjects(employee.id);
+	let projects = [];
 
 	let projectId = 0;
 	
@@ -59,7 +58,7 @@ export default function TeamDashboardPage() {
 	function generateOptions(): JSX.Element[] {
 		const renderData = [];
 		for (let project of projects) {
-			renderData.push(<option id={project.id.toString()}>{project.name}</option>);
+			renderData.push(<option id={project.id.toString()}>{project.title}</option>);
 		}
 		return renderData;
 	}
@@ -98,7 +97,6 @@ export default function TeamDashboardPage() {
 						{generateOptions()}
 					</select>
 					<div style={{position: "relative", top: -40}}>
-						<DiagramHeader dateStart={dateStart.toLocaleDateString()} dateEnd={dateEnd.toLocaleDateString()}/>
 						{renderLineChart}
 						<p>Итоговое время: {totalTime} часов</p>
 						<p>Среднее в день: {totalTime / (dayWorked || 1)} часов</p>

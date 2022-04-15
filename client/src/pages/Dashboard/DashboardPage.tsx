@@ -3,20 +3,20 @@ import { Box } from 'grommet';
 import MaterialUIBox from '@mui/material/Box';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { Employee, TimeInterval, State } from '../../data';
 import Header from '../../components/Header';
-import DiagramHeader from '../../components/Dashboard/DiagramHeader';
+import TimeStats from '../../components/Dashboard/TimeStats';
 import { fetchFunctionApi } from '../../helpers';
-import { SelectProject } from '../../components/Select/SelectProject';
+import { SelectProject, SelectDateRange } from '../../components/Select';
 
 export default function DashboardPage() {
 	const employeeId = 1;
-	const dateRange = 7;
-	const dateEnd = new Date(Date.now());
-	const dateStart = addDays(dateEnd, -dateRange + 1);
+	const defaultDateRange = 7;
+	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
+	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
+	const [selectedProject, setSelectedProject] = useState(0);
+
 	const [employeeData, setEmployeeData] = useState({} as Employee);
-	const [data, setData] = useState([]);
 	const [state, setState] = useState(State.Loading);
 
 	useEffect(() => {
@@ -25,8 +25,10 @@ export default function DashboardPage() {
 		loadData()
 		.then(
 			(result) => {
-				setEmployeeData(result[0] as Employee);
-				setData(result[1] as number[]);
+				setEmployeeData(result as Employee);
+				if (result.projects.length > 0) {
+					setSelectedProject(result.projects[0].id);
+				}
 				setState(State.Loaded);
 			}
 		)
@@ -35,12 +37,10 @@ export default function DashboardPage() {
 		});
 	});
 
-	const loadData = async () => {
-		return [
-			await fetchFunctionApi<Employee>(`/Employee/${employeeId}`),
-			await fetchFunctionApi<number[]>(`/TimeInterval/stats?employeeId=${employeeId}&projectId=1&dateStart=${dateStart.toLocaleDateString()}&dateEnd=${dateEnd.toLocaleDateString()}`)
-		]
+	async function loadData() {
+		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
 	}
+
 
 	if (state === State.Loading) {
 		return <Typography>Loading...</Typography>
@@ -49,35 +49,14 @@ export default function DashboardPage() {
 	if (state === State.Error) {
 		return <Typography>Server unavailable</Typography>
 	}
-	
-	let totalTime = 0;
-	let dayWorked = 0;
-
-	const statData = [];
-	for (let i = 0; i < data.length; i++) {
-		const timeHours = data[i];
-		statData.push({name: addDays(dateStart, i).toLocaleDateString(), hours: timeHours});
-		if (timeHours > 0) {
-			totalTime += timeHours;
-			dayWorked++;
-		}
-	}
-
-	const renderLineChart = (
-		<LineChart width={700} height={380} data={statData} margin={{
-			top: 20,
-			left: 20,
-			right: 20,
-		}}>
-			<Line type="monotone" dataKey="hours" stroke="#006eff" />
-			<CartesianGrid stroke="#ccc" />
-			<XAxis dataKey="name" />
-			<YAxis />
-			<Tooltip />
-		</LineChart>
-	);
 
 	function onProjectChange(event: React.ChangeEvent<HTMLInputElement>) {
+		setSelectedProject(parseInt(event.target.value));
+	}
+
+	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const range = parseInt(event.target.value);
+		setDateStart(addDays(dateEnd, -range + 1));
 	}
 
 	return (
@@ -86,20 +65,13 @@ export default function DashboardPage() {
 			<div className="mainbox">
 				<h3>Статистика сотрудника {employeeData.fullName}</h3>
 				<div>
-					
 					<div style={{position: "relative"}}>
 						<div style={{position: "relative", display: "flex", padding: 10}}>
 							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
 							<SelectProject projects={employeeData.projects} onChange={onProjectChange}/>
-							<select style={{marginLeft: '30px'}}>
-								<option>Последние 7 дней</option>
-								<option>Последниe 14 дней</option>
-								<option>Последние 30 дней</option>
-							</select>
+							<SelectDateRange onChange={onDateRangeChange}/>
 						</div>
-						{renderLineChart}
-						<p>Итоговое время: {totalTime} часов</p>
-						<p>Среднее в день: {+(totalTime / (dayWorked || 1)).toPrecision(2)} часов</p>
+						<TimeStats employeeId={employeeId} projectId={selectedProject} dateStart={dateStart} dateEnd={dateEnd}/>
 					</div>
 				</div>
 			</div>

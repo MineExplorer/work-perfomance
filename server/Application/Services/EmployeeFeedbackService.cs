@@ -18,25 +18,14 @@
             _employeeFeedbackRepository = employeeRepository;
         }
 
-        public List<EmployeeDto> GetEmployees()
-        {
-            return _employeeFeedbackRepository.GetEmployees().Select(x => new EmployeeDto(x)).ToList();
-        }
-
         public EmployeeFeedbackDto InsertFeedback(EmployeeFeedbackCreateRequestDto feedback)
         {
             return new EmployeeFeedbackDto(_employeeFeedbackRepository.InsertFeedback(feedback.ToModel()));
         }
 
-        public EmployeeFeedbackDto GetEmployee(int id)
+        public List<EmployeeFeedbackDto> GetFeedbackForEmployee(int employeeId)
         {
-            EmployeeFeedback result = _employeeFeedbackRepository.GetEmployee(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            return new EmployeeFeedbackDto(result);
+            return _employeeFeedbackRepository.GetFeedbackForEmployee(employeeId).Select(e => new EmployeeFeedbackDto(e)).ToList();
         }
 
         public void DeleteFeedback(int id)
