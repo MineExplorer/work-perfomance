@@ -6,7 +6,7 @@ namespace Application.ViewModels
 {
     public class EmployeeDto
     {
-        public EmployeeDto(Employee employee, bool isChild = false)
+        public EmployeeDto(Employee employee, bool serializeProjects = false)
         {
             Id = employee.Id;
             Email = employee.Email;
@@ -17,9 +17,9 @@ namespace Application.ViewModels
             TechStack = employee.TechStack;
             PermissionLevel = (int)employee.PermissionLevel;
             Created = employee.Created;
-            if (!isChild && employee.ProjectEmployees != null)
+            if (serializeProjects && employee.ProjectEmployees != null)
             {
-                Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project, true)).ToArray();
+                Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project, false)).ToArray();
             }
         }
 

@@ -5,13 +5,13 @@ namespace Application.ViewModels
 {
     public class ProjectDto
     {
-        public ProjectDto(Project project, bool isChild = false)
+        public ProjectDto(Project project, bool serializeEmployees = false)
         {
             Id = project.Id;
             Title = project.Title;
-            if (!isChild && project.ProjectEmployees != null)
+            if (serializeEmployees && project.ProjectEmployees != null)
             {
-                Employees = project.ProjectEmployees.Select(e => new EmployeeDto(e.Employee, true)).ToArray();
+                Employees = project.ProjectEmployees.Select(e => new EmployeeDto(e.Employee, false)).ToArray();
             }
         }
 

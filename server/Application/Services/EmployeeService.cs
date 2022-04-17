@@ -36,7 +36,7 @@
                 throw new KeyNotFoundException();
             }
 
-            return new EmployeeDto(result);
+            return new EmployeeDto(result, true);
         }
 
         public EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee)

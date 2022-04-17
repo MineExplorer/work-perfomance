@@ -4,13 +4,14 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 import { Employee, Project } from '../../data';
 import { fetchFunctionApi } from '../../helpers';
 
-export default function TimeStats(props: {project: Project, dateStart: Date, dateEnd: Date}) {
+const lineColors = ["#006eff", "green", "blue"];
+
+export default function TeamTimeChart(props: {project: Project, dateStart: Date, dateEnd: Date}) {
     const [timeData, setTimeData] = useState([]);
-    const employees = props.project.employees;
-    console.log(employees);
+    const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-		loadData()
+		loadTimeData()
 		.then(
 			(result) => {
 				setTimeData(result);
@@ -19,30 +20,51 @@ export default function TimeStats(props: {project: Project, dateStart: Date, dat
 		.catch(error => {
 			console.log(error);
 		});
+
+		loadEmployeesData()
+		.then(
+			(result) => {
+				setEmployees(result.employees);
+			}
+		)
+		.catch(error => {
+			console.log(error);
+		});
 	}, [props]);
 
-    async function loadData() {
+    async function loadTimeData() {
         const dateStart = props.dateStart.toLocaleDateString();
         const dateEnd = props.dateEnd.toLocaleDateString();
         return await fetchFunctionApi<object[]>(`/TimeInterval/teamstats?projectId=${props.project.id}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
 	}
+
+    async function loadEmployeesData() {
+        return await fetchFunctionApi<Project>(`/Project/${props.project.id}`);
+    }
     
-    let totalTime = 0;
-	let daysWorked = 0;
+    const totalTime = {};
+    let totalTimeSum = 0;
 
 	const statData = timeData.map((data, index) => {
         const chartData = {name: addDays(props.dateStart, index).toLocaleDateString()};
         for (let employee of employees) {
-            chartData[employee.id] = data[employee.id] ?? 0;
+            const time = data[employee.id] ?? 0;
+            chartData[employee.id] = time;
+            totalTime[employee.id] = (totalTime[employee.id] || 0) + time;
+            totalTimeSum += time;
         }
         return chartData;
     });
 
     console.log(statData);
 
-    const renderLines = employees.map(employee => {
+    const renderLines = employees.map((employee, index) => {
         const lineName = employee.fullName;
-        return <Line type="monotone" dataKey={employee.id} name={lineName} stroke="#006eff" />
+        return <Line type="monotone" dataKey={employee.id} name={lineName} stroke={lineColors[index]} />
+    });
+
+    const renderText = employees.map((employee, index) => {
+        return <p style={{color: lineColors[index]}}>{employee.fullName}: {totalTime[employee.id]} часов</p>
     });
 
     return (
@@ -50,7 +72,7 @@ export default function TimeStats(props: {project: Project, dateStart: Date, dat
             <LineChart width={700} height={380} data={statData} margin={{
                 top: 20,
                 left: 20,
-                right: 20
+                right: 40
             }}>
                 {renderLines}
                 <CartesianGrid stroke="#ccc" />
@@ -58,8 +80,10 @@ export default function TimeStats(props: {project: Project, dateStart: Date, dat
                 <YAxis />
                 <Tooltip />
             </LineChart>
-            <p>Итоговое время: {totalTime} часов</p>
-            <p>Среднее в день: {+(totalTime / (daysWorked || 1)).toPrecision(2)} часов</p>
+            <div style={{marginLeft: 50, textAlign: "left"}}>
+                <p>Итоговое время: {totalTimeSum} часов</p>
+                {renderText}
+            </div>
         </div>
     );
 }

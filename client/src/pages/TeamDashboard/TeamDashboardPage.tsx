@@ -1,42 +1,38 @@
 import { useEffect, useState } from 'react';
-import { Box } from 'grommet';
-import MaterialUIBox from '@mui/material/Box';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { Employee, Project, State } from '../../data';
+import { Project, State } from '../../data';
 import Header from '../../components/Header';
 import { fetchFunctionApi } from '../../helpers';
 import { SelectProject, SelectDateRange } from '../../components/Select';
-import TeamTimeStats from '../../components/Dashboard/TeamTimeStats';
+import TeamTimeChart from '../../components/Dashboard/TeamTimeChart';
 
 export default function TeamDashboardPage() {
-	const projectId = 2;
 	const defaultDateRange = 7;
 	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
 	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
 
-	const [projectData, seProjectData] = useState({} as Project);
+	const [projects, setProjects] = useState([] as Project[]);
+	const [selectedProject, setSelectedProject] = useState(0);
 	const [state, setState] = useState(State.Loading);
 
 	useEffect(() => {
-		if (state === State.Loaded) return;
-
 		loadData()
 		.then(
 			(result) => {
-				seProjectData(result);
+				setProjects(result);
+				setSelectedProject(result[0].id);
 				setState(State.Loaded);
 			}
 		)
 		.catch(error => {
 			setState(State.Error);
 		});
-	});
+	}, []);
 
 	async function loadData() {
-		return await fetchFunctionApi<Project>(`/Project/${projectId}`);
+		return await fetchFunctionApi<Project[]>(`/Project`);
 	}
-
 
 	if (state === State.Loading) {
 		return <Typography>Loading...</Typography>
@@ -46,23 +42,30 @@ export default function TeamDashboardPage() {
 		return <Typography>Server unavailable</Typography>
 	}
 
+	function onProjectChange(event: React.ChangeEvent<HTMLInputElement>) {
+		setSelectedProject(parseInt(event.target.value));
+	}
+
 	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const range = parseInt(event.target.value);
 		setDateStart(addDays(dateEnd, -range + 1));
 	}
 
+	const project = projects.find(p => p.id == selectedProject);
+
 	return (
 		<div>
 			<Header/>
 			<div className="mainbox">
-				<h3>Статистика проекта {projectData.title}</h3>
-				<div>
-					<div style={{position: "relative"}}>
-						<div style={{position: "relative", display: "flex", padding: 10}}>
+				<h3>Статистика проекта {project.title}</h3>
+				<div style={{display: "flex", alignItems: 'flex-start', position: 'relative', left: -100}}>
+					<SelectProject projects={projects} onChange={onProjectChange}/>
+					<div style={{paddingLeft: 30}}>
+						<div style={{position: "relative", display: "flex", paddingBottom: 10}}>
 							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
 							<SelectDateRange onChange={onDateRangeChange}/>
 						</div>
-						<TeamTimeStats project={projectData} dateStart={dateStart} dateEnd={dateEnd}/>
+						<TeamTimeChart project={project} dateStart={dateStart} dateEnd={dateEnd}/>
 					</div>
 				</div>
 			</div>

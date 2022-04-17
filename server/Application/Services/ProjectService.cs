@@ -28,7 +28,7 @@
                 throw new KeyNotFoundException();
             }
 
-            return new ProjectDto(result);
+            return new ProjectDto(result, true);
         }
     }
 }

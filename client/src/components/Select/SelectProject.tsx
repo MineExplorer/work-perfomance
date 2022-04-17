@@ -6,7 +6,7 @@ export function SelectProject(props: {projects: Project[], onChange: any}) {
         return <option value={p.id}>{p.title}</option>
     });
 
-    return <select style={{position: "absolute", right: 100}} onChange={props.onChange}>
+    return <select style={{padding: '5px 0px'}} onChange={props.onChange}>
         {optionsList}
     </select>
 }
