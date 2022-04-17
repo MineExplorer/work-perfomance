@@ -34,14 +34,6 @@ export default function TeamDashboardPage() {
 		return await fetchFunctionApi<Project[]>(`/Project`);
 	}
 
-	if (state === State.Loading) {
-		return <Typography>Loading...</Typography>
-	}
-	
-	if (state === State.Error) {
-		return <Typography>Server unavailable</Typography>
-	}
-
 	function onProjectChange(event: React.ChangeEvent<HTMLInputElement>) {
 		setSelectedProject(parseInt(event.target.value));
 	}
@@ -51,11 +43,18 @@ export default function TeamDashboardPage() {
 		setDateStart(addDays(dateEnd, -range + 1));
 	}
 
-	const project = projects.find(p => p.id == selectedProject);
+	let mainUi: JSX.Element;
 
-	return (
-		<div>
-			<Header/>
+	if (state === State.Loading) {
+		mainUi = <Typography>Loading...</Typography>
+	}
+	else if (state === State.Error) {
+		mainUi = <Typography>Server unavailable</Typography>
+	}
+	else {
+		const project = projects.find(p => p.id == selectedProject);
+
+		mainUi = (
 			<div className="mainbox">
 				<h3>Статистика проекта {project.title}</h3>
 				<div style={{display: "flex", alignItems: 'flex-start', position: 'relative', left: -100}}>
@@ -69,6 +68,13 @@ export default function TeamDashboardPage() {
 					</div>
 				</div>
 			</div>
+		)
+	}
+
+	return (
+		<div>
+			<Header/>
+			{mainUi}
 		</div>
 	);
 }
