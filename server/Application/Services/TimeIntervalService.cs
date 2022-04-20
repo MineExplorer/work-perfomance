@@ -5,7 +5,6 @@
     using System.Linq;
     using Application.DTO.Request;
     using Application.ViewModels;
-    using Domain.Enums;
     using Domain.Models;
     using Infrastructure.Repositories;
 
@@ -24,46 +23,33 @@
                 Select(x => new TimeIntervalDto(x)).ToList();
         }
 
-        public List<float> GetTimeStatsForPeriod(int employeeId, int projectId, string rawDateStart, string rawDateEnd)
+        public Dictionary<int, List<float>> GetTimeStatsForPeriod(int employeeId, string rawDateStart, string rawDateEnd)
         {
             DateTime dateStart = DateTime.Parse(rawDateStart);
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
-            var dayIntervals = new List<float>();
-            var intervals = _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd);
-            for (DateTime date = dateStart; date <= dateEnd; date = date.AddDays(1))
+            var workingTimeByProject = new Dictionary<int, List<float>>();
+            var intervalsByProject = _timeIntervalRepository.GetTimeIntervalsForEmployeeProjects(employeeId, dateStart, dateEnd);
+            foreach(var pair in intervalsByProject)
             {
-                float sum = 0;
-                intervals.Where(i => i.Date == date).ToList().ForEach(i => sum += i.Duration);
-                dayIntervals.Add(sum);
-            }
+                if (pair.Value.Count == 0) continue;
 
-            return dayIntervals;
+                workingTimeByProject.Add(pair.Key, CalculateSumOfIntervalsByDay(pair.Value, dateStart, dateEnd));
+            }
+            return workingTimeByProject;
         }
 
-        public List<Dictionary<int, float>> GetTeamStatsForPeriod(int projectId, string rawDateStart, string rawDateEnd)
+        public Dictionary<int, List<float>> GetTeamStatsForPeriod(int projectId, string rawDateStart, string rawDateEnd)
         {
             DateTime dateStart = DateTime.Parse(rawDateStart);
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
-            var dayIntervals = new List<Dictionary<int, float>>();
-            var intervals = _timeIntervalRepository.GetTimeIntervalsForProject(projectId, dateStart, dateEnd);
-            for (DateTime date = dateStart; date <= dateEnd; date = date.AddDays(1))
+            var workingTimeByEmployee = new Dictionary<int, List<float>>();
+            var intervalsByEmployee = _timeIntervalRepository.GetTimeIntervalsForProjectEmployees(projectId, dateStart, dateEnd);
+            foreach (var pair in intervalsByEmployee)
             {
-                var dict = new Dictionary<int, float>();
-                intervals.Where(i => i.Date == date).ToList().ForEach(i =>
-                {
-                    if (dict.ContainsKey(i.EmployeeId))
-                    {
-                        dict[i.EmployeeId] = dict[i.EmployeeId] + i.Duration;
-                    }
-                    else
-                    {
-                        dict.Add(i.EmployeeId, i.Duration);
-                    }
-                });
-                dayIntervals.Add(dict);
+                workingTimeByEmployee.Add(pair.Key, CalculateSumOfIntervalsByDay(pair.Value, dateStart, dateEnd));
             }
 
-            return dayIntervals;
+            return workingTimeByEmployee;
         }
 
         public TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval)
@@ -96,6 +82,18 @@
         public void DeleteTimeInterval(int id)
         {
             _timeIntervalRepository.DeleteTimeInterval(id);
+        }
+
+        private List<float> CalculateSumOfIntervalsByDay(List<TimeInterval> intervals, DateTime dateStart, DateTime dateEnd)
+        {
+            var workingHoursPerDay = new List<float>();
+            for (DateTime date = dateStart; date <= dateEnd; date = date.AddDays(1))
+            {
+                float sum = 0;
+                intervals.Where(i => i.Date == date).ToList().ForEach(i => sum += i.Duration);
+                workingHoursPerDay.Add(sum);
+            }
+            return workingHoursPerDay;
         }
     }
 }

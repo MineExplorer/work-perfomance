@@ -16,6 +16,7 @@ namespace Application.ViewModels
             Experience = employee.Experience;
             TechStack = employee.TechStack;
             PermissionLevel = (int)employee.PermissionLevel;
+            WorkDayDuration = employee.WorkDayDuration;
             Created = employee.Created;
             if (serializeProjects && employee.ProjectEmployees != null)
             {
@@ -42,6 +43,8 @@ namespace Application.ViewModels
         public int Experience { get; set; }
 
         public string TechStack { get; set; }
+
+        public float WorkDayDuration { get; set; }
 
         public DateTime Created { get; set; }
 

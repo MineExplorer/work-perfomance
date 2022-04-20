@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Box } from 'grommet';
-import MaterialUIBox from '@mui/material/Box';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { Employee, TimeInterval, State } from '../../data';
+import { Employee, State } from '../../data';
 import Header from '../../components/Header';
-import TimeStats from '../../components/Dashboard/TimeStats';
+import EmployeeTimeChart from '../../components/Dashboard/EmployeeTimeChart';
 import { fetchFunctionApi } from '../../helpers';
 import { SelectDateRange } from '../../components/Select';
 
@@ -60,7 +58,7 @@ export default function DashboardPage() {
 							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
 							<SelectDateRange onChange={onDateRangeChange}/>
 						</div>
-						<TimeStats employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
+						<EmployeeTimeChart employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
 					</div>
 				</div>
 			</div>

@@ -29,6 +29,8 @@
 
         public string TechStack { get; set; }
 
+        public float WorkDayDuration { get; set; }
+
         public DateTime Created { get; set; } = DateTime.Now;
 
         public IList<ProjectEmployee> ProjectEmployees { get; set; }

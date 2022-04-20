@@ -35,11 +35,11 @@
         }
         
         [HttpGet("stats")]
-        public ActionResult<List<float>> GetTimeStatsForPeriod(int employeeId, int projectId, string dateStart, string dateEnd)
+        public ActionResult<Dictionary<int, List<float>>> GetTimeStatsForPeriod(int employeeId, string dateStart, string dateEnd)
         {
             try
             {
-                return Ok(_timeIntervalService.GetTimeStatsForPeriod(employeeId, projectId, dateStart, dateEnd));
+                return Ok(_timeIntervalService.GetTimeStatsForPeriod(employeeId, dateStart, dateEnd));
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@
         }
         
         [HttpGet("teamstats")]
-        public ActionResult<List<object>> GetTeamStatsForPeriod(int projectId, string dateStart, string dateEnd)
+        public ActionResult<Dictionary<int, List<float>>> GetTeamStatsForPeriod(int projectId, string dateStart, string dateEnd)
         {
             try
             {

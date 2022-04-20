@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Models;
 using Infrastructure.EF;
@@ -23,16 +24,32 @@ namespace Infrastructure.Repositories
                 Include(e => e.WorkType);
         }
         
-        public IQueryable<TimeInterval> GetTimeIntervalsForEmployee(int employeeId, DateTime startDate, DateTime endDate)
+        public Dictionary<int, List<TimeInterval>> GetTimeIntervalsForEmployeeProjects(int employeeId, DateTime startDate, DateTime endDate)
         {
-            return context.TimeIntervals.AsNoTracking().
+            var intervalsByProject = new Dictionary<int, List<TimeInterval>>();
+            var intervals = context.TimeIntervals.AsNoTracking().
                 Where(e => e.EmployeeId == employeeId && e.Date >= startDate && e.Date <= endDate);
+            var employeeProjects = context.ProjectEmployees.Where(e => e.EmployeeId == employeeId).ToList();
+            foreach (var record in employeeProjects)
+            {
+                var projectIntervals = intervals.Where(i => i.ProjectId == record.ProjectId).ToList();
+                intervalsByProject.Add(record.ProjectId, projectIntervals);
+            }
+            return intervalsByProject;
         }
         
-        public IQueryable<TimeInterval> GetTimeIntervalsForProject(int projectId, DateTime startDate, DateTime endDate)
+        public Dictionary<int, List<TimeInterval>> GetTimeIntervalsForProjectEmployees(int projectId, DateTime startDate, DateTime endDate)
         {
-            return context.TimeIntervals.AsNoTracking().
-                Where(e => e.ProjectId == projectId && e.Date >= startDate && e.Date <= endDate);
+            var intervalsByEmployee = new Dictionary<int, List<TimeInterval>>();
+            var intervals = context.TimeIntervals.AsNoTracking().
+                 Where(e => e.ProjectId == projectId && e.Date >= startDate && e.Date <= endDate);
+            var employeeProjects = context.ProjectEmployees.Where(e => e.ProjectId == projectId).ToList();
+            foreach (var record in employeeProjects)
+            {
+                var employeeIntervals = intervals.Where(i => i.EmployeeId == record.EmployeeId).ToList();
+                intervalsByEmployee.Add(record.EmployeeId, employeeIntervals);
+            }
+            return intervalsByEmployee;
         }
 
         public TimeInterval InsertTimeInterval(TimeInterval timeInterval)
