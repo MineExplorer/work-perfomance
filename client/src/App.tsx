@@ -5,6 +5,7 @@ import LoginPage from './pages/Login';
 import DashboardPage from './pages/Dashboard';
 import TeamDashboardPage from './pages/TeamDashboard';
 import EmployeesPage from './pages/Employees';
+import TimeReportPage from './pages/TimeReport';
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -18,7 +19,7 @@ function App() {
           </div>
           <Routes>
             <Route path="/" element={<Navigate replace to="/login" />} />
-            <Route path="/timetable" element = {<DashboardPage/>}/>
+            <Route path="/timetable" element = {<TimeReportPage/>}/>
             <Route path="/dashboard" element = {<DashboardPage/>}/>
             <Route path="/teamdashboard" element = {<TeamDashboardPage/>}/>
             <Route path="/employees" element = {<EmployeesPage/>}/>

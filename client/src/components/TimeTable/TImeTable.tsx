@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { Employee, State } from '../../data';
+import { Employee, State, TimeInterval } from '../../data';
 import Header from '../../components/Header';
-import EmployeeTimeChart from '../../components/Dashboard/EmployeeTimeChart';
 import { fetchFunctionApi } from '../../helpers';
-import { SelectDateRange } from '../../components/Select';
 
-export default function DashboardPage() {
-	const employeeId = 1;
+export default function TimeReportPage(props: {employeeId: number, dateStart: Date, dateEnd: Date}) {
 	const defaultDateRange = 7;
 	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
 	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
 
-	const [employeeData, setEmployeeData] = useState({} as Employee);
+	const [timeData, setTimeData] = useState([] as TimeInterval[]);
 	const [state, setState] = useState(State.Loading);
 
 	useEffect(() => {
@@ -22,7 +19,7 @@ export default function DashboardPage() {
 		loadData()
 		.then(
 			(result) => {
-				setEmployeeData(result);
+				setTimeData(result);
 				setState(State.Loaded);
 			}
 		)
@@ -32,10 +29,10 @@ export default function DashboardPage() {
 	});
 
 	async function loadData() {
-		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
+		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employeeId}`);
 	}
 
-	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
+	function onTimeRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const range = parseInt(event.target.value);
 		setDateStart(addDays(dateEnd, -range + 1));
 	}
@@ -51,16 +48,7 @@ export default function DashboardPage() {
 	else {
 		mainUi = (
 			<div className="mainbox">
-				<h3>Статистика сотрудника {employeeData.fullName}</h3>
-				<div>
-					<div style={{position: "relative"}}>
-						<div style={{position: "relative", display: "flex", padding: 10}}>
-							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
-							<SelectDateRange onChange={onDateRangeChange}/>
-						</div>
-						<EmployeeTimeChart employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
-					</div>
-				</div>
+				
 			</div>
 		)
 	}

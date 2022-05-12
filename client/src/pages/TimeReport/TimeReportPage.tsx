@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { Employee, State } from '../../data';
+import { Employee, State, TimeInterval } from '../../data';
 import Header from '../../components/Header';
-import EmployeeTimeChart from '../../components/Dashboard/EmployeeTimeChart';
 import { fetchFunctionApi } from '../../helpers';
-import { SelectDateRange } from '../../components/Select';
+import { SelectTimeRange, TimeRange } from '../../components/Select';
 
-export default function DashboardPage() {
+export default function TimeReportPage() {
 	const employeeId = 1;
-	const defaultDateRange = 7;
-	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
-	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
+
+	const interval = getDateInterval(TimeRange.Week);
+	const [dateStart, setDateStart] = useState(interval.start);
+	const [dateEnd, setDateEnd] = useState(interval.end);
 
 	const [employeeData, setEmployeeData] = useState({} as Employee);
 	const [state, setState] = useState(State.Loading);
@@ -35,9 +35,31 @@ export default function DashboardPage() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
 	}
 
-	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
-		const range = parseInt(event.target.value);
-		setDateStart(addDays(dateEnd, -range + 1));
+	function onTimeRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const range = parseInt(event.target.value) as TimeRange;
+		const interval = getDateInterval(range);
+		setDateStart(interval.start);
+		setDateEnd(interval.end);
+	}
+
+	function getDateInterval(timeRange: TimeRange): {start: Date, end: Date} {
+		const today = new Date(Date.now());
+		switch(timeRange) {
+			case TimeRange.Day:
+				return {start: today, end: today};
+			case TimeRange.Week:
+				const day = today.getDay();
+				const startDate = addDays(today, -day + 1);
+				return {
+					start: startDate,
+					end: addDays(startDate, 6)
+				}
+			case TimeRange.Month:
+				return {
+					start: new Date(today.setDate(1)),
+					end: new Date(today.getFullYear(), today.getMonth() + 1, 0)
+				}
+		}
 	}
 
 	let mainUi: JSX.Element;
@@ -51,14 +73,14 @@ export default function DashboardPage() {
 	else {
 		mainUi = (
 			<div className="mainbox">
-				<h3>Статистика сотрудника {employeeData.fullName}</h3>
+				<h3>Время работы сотрудника {employeeData.fullName}</h3>
 				<div>
 					<div style={{position: "relative"}}>
 						<div style={{position: "relative", display: "flex", padding: 10}}>
 							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
-							<SelectDateRange onChange={onDateRangeChange}/>
+							<SelectTimeRange onChange={onTimeRangeChange}/>
 						</div>
-						<EmployeeTimeChart employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
+						
 					</div>
 				</div>
 			</div>
