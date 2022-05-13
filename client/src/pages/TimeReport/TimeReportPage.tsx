@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
-import { Employee, State, TimeInterval } from '../../data';
+import { Employee, State } from '../../data';
 import Header from '../../components/Header';
 import { fetchFunctionApi } from '../../helpers';
-import { SelectTimeRange, TimeRange } from '../../components/Select';
+import { SelectDateRange, DateRange } from '../../components/Select';
+import { Button } from '@mui/material';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { AuthContext } from '../../stores/Auth';
 
 export default function TimeReportPage() {
-	const employeeId = 1;
+	const store = useContext(AuthContext)
+	const employeeId = store.userData.id;
 
-	const interval = getDateInterval(TimeRange.Week);
-	const [dateStart, setDateStart] = useState(interval.start);
-	const [dateEnd, setDateEnd] = useState(interval.end);
+	const [dateRange, setDateRange] = useState(DateRange.Week);
+	const interval = getDateInterval(dateRange);
+	const [startDate, setStartDate] = useState(interval.start);
+	const [endDate, setEndDate] = useState(interval.end);
 
 	const [employeeData, setEmployeeData] = useState({} as Employee);
 	const [state, setState] = useState(State.Loading);
@@ -35,31 +40,51 @@ export default function TimeReportPage() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
 	}
 
-	function onTimeRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
-		const range = parseInt(event.target.value) as TimeRange;
+	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const range = parseInt(event.target.value) as DateRange;
+		setDateRange(range);
 		const interval = getDateInterval(range);
-		setDateStart(interval.start);
-		setDateEnd(interval.end);
+		setStartDate(interval.start);
+		setEndDate(interval.end);
 	}
 
-	function getDateInterval(timeRange: TimeRange): {start: Date, end: Date} {
-		const today = new Date(Date.now());
-		switch(timeRange) {
-			case TimeRange.Day:
-				return {start: today, end: today};
-			case TimeRange.Week:
-				const day = today.getDay();
-				const startDate = addDays(today, -day + 1);
+	function getDateInterval(range: DateRange, currentDate: Date = new Date(Date.now())): {start: Date, end: Date} {
+		switch(range) {
+			case DateRange.Day:
+				return {start: currentDate, end: currentDate};
+			case DateRange.Week:
+				let day = currentDate.getDay();
+				day = day === 0 ? 6 : day - 1;
+				const startDate = addDays(currentDate, -day);
 				return {
 					start: startDate,
 					end: addDays(startDate, 6)
 				}
-			case TimeRange.Month:
+			case DateRange.Month:
 				return {
-					start: new Date(today.setDate(1)),
-					end: new Date(today.getFullYear(), today.getMonth() + 1, 0)
+					start: new Date(currentDate.setDate(1)),
+					end: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
 				}
 		}
+	}
+
+	function changeDate(date: Date, direction: number): Date {
+		switch(dateRange) {
+			case DateRange.Day:
+				return addDays(date, direction);
+			case DateRange.Week:
+				return addDays(date, direction * 7);
+			case DateRange.Month:
+				const newDate = date.setMonth(date.getMonth() + direction);
+				return new Date(newDate);
+		}
+	}
+
+	function changePeriod(direction: number) {
+		const previousDate = changeDate(startDate, direction);
+		const interval = getDateInterval(dateRange, previousDate);
+		setStartDate(interval.start);
+		setEndDate(interval.end);
 	}
 
 	let mainUi: JSX.Element;
@@ -77,10 +102,19 @@ export default function TimeReportPage() {
 				<div>
 					<div style={{position: "relative"}}>
 						<div style={{position: "relative", display: "flex", padding: 10}}>
-							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
-							<SelectTimeRange onChange={onTimeRangeChange}/>
+							<SelectDateRange onChange={onDateRangeChange}/>
+							<Button
+								variant="contained"
+								onClick={() => changePeriod(-1)}
+								startIcon={<ArrowBack/>}
+							/>
+							<p style={{fontWeight: "bold"}}>{startDate === endDate ? startDate.toLocaleDateString() : `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`}</p>
+							<Button
+								variant="contained"
+								onClick={() => changePeriod(1)}
+								startIcon={<ArrowForward/>}
+							/>
 						</div>
-						
 					</div>
 				</div>
 			</div>

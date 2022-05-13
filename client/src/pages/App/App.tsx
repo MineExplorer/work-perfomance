@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+
 import './App.css';
-import LoginPage from './pages/Login';
-import DashboardPage from './pages/Dashboard';
-import TeamDashboardPage from './pages/TeamDashboard';
-import EmployeesPage from './pages/Employees';
-import TimeReportPage from './pages/TimeReport';
+import LoginPage from '../Login';
+import DashboardPage from '../Dashboard';
+import TeamDashboardPage from '../TeamDashboard';
+import EmployeesPage from '../Employees';
+import TimeReportPage from '../TimeReport';
 
-function App() {
-  const [auth, setAuth] = useState(false);
-
+export default function App() {
   return (
     <BrowserRouter>
       <div className="App">
@@ -30,5 +29,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;

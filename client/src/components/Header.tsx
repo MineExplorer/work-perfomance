@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export default function AppHeader() {	
+export default function AppHeader() {
 	return (
 		<>
 			<ul className="header" style={{

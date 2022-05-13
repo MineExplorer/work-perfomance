@@ -1,7 +1,13 @@
+export enum DateRange {
+    Day,
+    Week,
+    Month
+}
+
 export function SelectDateRange(props: {onChange: any}) {
-    return <select style={{marginLeft: '30px'}} onChange={props.onChange}>
-        <option value={7}>Последние 7 дней</option>
-        <option value={14}>Последниe 14 дней</option>
-        <option value={30}>Последние 30 дней</option>
+    return <select defaultValue={DateRange.Week} style={{marginLeft: '30px'}} onChange={props.onChange}>
+        <option value={DateRange.Day}>День</option>
+        <option value={DateRange.Week}>Неделя</option>
+        <option value={DateRange.Month}>Месяц</option>
     </select>
 }

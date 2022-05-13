@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useContext, useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
 import { Employee, State } from '../../data';
@@ -6,9 +6,13 @@ import Header from '../../components/Header';
 import EmployeeTimeChart from '../../components/Dashboard/EmployeeTimeChart';
 import { fetchFunctionApi } from '../../helpers';
 import { SelectDateRange } from '../../components/Select';
+import { AuthContext } from '../../stores/Auth';
+import { observer } from 'mobx-react';
 
-export default function DashboardPage() {
-	const employeeId = 1;
+const DashboardPage: React.FC = () => {
+	const store = useContext(AuthContext)
+	const employeeId = store.userData.id;
+
 	const defaultDateRange = 7;
 	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
 	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
@@ -29,7 +33,7 @@ export default function DashboardPage() {
 		.catch(error => {
 			setState(State.Error);
 		});
-	});
+	}, []);
 
 	async function loadData() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
@@ -72,3 +76,5 @@ export default function DashboardPage() {
 		</div>
 	);
 }
+
+export default observer(DashboardPage)
