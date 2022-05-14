@@ -23,5 +23,12 @@ namespace Infrastructure.Repositories
         {
             return GetProjects().Where(p => p.Id == id).FirstOrDefault();
         }
+
+        public Project InsertProject(Project project)
+        {
+            var entity = context.Add(project);
+            context.SaveChanges();
+            return entity.Entity;
+        }
     }
 }

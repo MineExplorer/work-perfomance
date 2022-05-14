@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Application.DTO.Request;
     using Application.ViewModels;
     using Domain.Models;
     using Infrastructure.Repositories;
@@ -29,6 +30,11 @@
             }
 
             return new ProjectDto(result, true);
+        }
+
+        public ProjectDto InsertProject(ProjectCreateRequestDto project)
+        {
+            return new ProjectDto(_projectRepository.InsertProject(project.ToModel()));
         }
     }
 }

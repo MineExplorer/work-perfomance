@@ -51,6 +51,19 @@
             }
         }
 
+        [HttpPost]
+        public ActionResult<ProjectDto> Insert([FromBody] ProjectCreateRequestDto project)
+        {
+            try
+            {
+                return Ok(_projectService.InsertProject(project));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
         private ActionResult ProjectNotFound(int id)
         {
             var error = new ErrorDto
