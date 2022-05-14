@@ -8,6 +8,7 @@ import { fetchFunctionApi } from '../../helpers';
 import { SelectDateRange } from '../../components/Select';
 import { AuthContext } from '../../stores/Auth';
 import { observer } from 'mobx-react';
+import Loading from '../../components/Loading';
 
 const DashboardPage: React.FC = () => {
 	const store = useContext(AuthContext)
@@ -24,12 +25,10 @@ const DashboardPage: React.FC = () => {
 		if (state === State.Loaded) return;
 
 		loadData()
-		.then(
-			(result) => {
-				setEmployeeData(result);
-				setState(State.Loaded);
-			}
-		)
+		.then((result) => {
+			setEmployeeData(result);
+			setState(State.Loaded);
+		})
 		.catch(error => {
 			setState(State.Error);
 		});
@@ -47,7 +46,7 @@ const DashboardPage: React.FC = () => {
 	let mainUi: JSX.Element;
 
 	if (state === State.Loading) {
-		mainUi = <Typography>Loading...</Typography>
+		mainUi = <Loading/>
 	}
 	else if (state === State.Error) {
 		mainUi = <Typography>Server unavailable</Typography>
