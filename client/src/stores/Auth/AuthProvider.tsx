@@ -1,19 +1,15 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext } from 'react';
 import { useLocalObservable } from 'mobx-react-lite';
 
 import { AuthStore } from './AuthStore';
 import Loading from '../../components/Loading';
+import { observer } from 'mobx-react';
 
 export const AuthContext = createContext<AuthStore>(null);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = observer(({ children }) => {
   const store = useLocalObservable(() => new AuthStore());
-  const [state, setState] = useState(store.state);
-
-  useEffect(() => {
-    store.fetchUserInfo()
-      .then(() => setState(store.state));
-  });
+  const { state } = store;
 
   return (
     <AuthContext.Provider value={store}>
@@ -22,4 +18,4 @@ export const AuthProvider = ({ children }) => {
       {state === 'loaded' ? children : null}
     </AuthContext.Provider>
   );
-};
+});

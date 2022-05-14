@@ -1,29 +1,26 @@
 import {useContext, useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays'
 import Typography from '@mui/material/Typography';
+import { observer, useLocalObservable } from 'mobx-react';
+
 import { Employee, State } from '../../data';
 import Header from '../../components/Header';
 import EmployeeTimeChart from '../../components/Dashboard/EmployeeTimeChart';
 import { fetchFunctionApi } from '../../helpers';
-import { SelectDateRange } from '../../components/Select';
 import { AuthContext } from '../../stores/Auth';
-import { observer } from 'mobx-react';
 import Loading from '../../components/Loading';
+import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
+import DateIntervalHeader from '../../components/DateIntervalHeader';
 
 const DashboardPage: React.FC = () => {
 	const store = useContext(AuthContext)
 	const employeeId = store.userData.id;
-
-	const defaultDateRange = 7;
-	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
-	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
-
 	const [employeeData, setEmployeeData] = useState({} as Employee);
 	const [state, setState] = useState(State.Loading);
 
-	useEffect(() => {
-		if (state === State.Loaded) return;
+	const intervalStore = useLocalObservable(() => new DateIntervalStore());
 
+	useEffect(() => {
 		loadData()
 		.then((result) => {
 			setEmployeeData(result);
@@ -36,11 +33,6 @@ const DashboardPage: React.FC = () => {
 
 	async function loadData() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
-	}
-
-	function onDateRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
-		const range = parseInt(event.target.value);
-		setDateStart(addDays(dateEnd, -range + 1));
 	}
 
 	let mainUi: JSX.Element;
@@ -57,11 +49,8 @@ const DashboardPage: React.FC = () => {
 				<h3>Статистика сотрудника {employeeData.fullName}</h3>
 				<div>
 					<div style={{position: "relative"}}>
-						<div style={{position: "relative", display: "flex", padding: 10}}>
-							<p style={{fontWeight: "bold"}}>{dateStart.toLocaleDateString()} - {dateEnd.toLocaleDateString()}</p>
-							<SelectDateRange onChange={onDateRangeChange}/>
-						</div>
-						<EmployeeTimeChart employee={employeeData} dateStart={dateStart} dateEnd={dateEnd}/>
+						<DateIntervalHeader/>
+						<EmployeeTimeChart employee={employeeData} dateStart={intervalStore.startDate} dateEnd={intervalStore.endDate}/>
 					</div>
 				</div>
 			</div>
@@ -71,7 +60,9 @@ const DashboardPage: React.FC = () => {
 	return (
 		<div>
 			<Header/>
-			{mainUi}
+			<DateIntervalContext.Provider value={intervalStore}>
+				{mainUi}
+			</DateIntervalContext.Provider>
 		</div>
 	);
 }

@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { SelectDateRange } from './Select';
 import { observer } from 'mobx-react-lite';
-import { DateIntervalContext } from '../pages/App/AppContainer';
+import { DateIntervalContext } from '../stores/DateIntervalStore';
 
 function DateIntervalHeader() {
 	const store = useContext(DateIntervalContext);

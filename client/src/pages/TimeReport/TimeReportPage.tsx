@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
+import { useLocalObservable } from 'mobx-react';
+
 import { Employee, State } from '../../data';
 import Header from '../../components/Header';
 import { fetchFunctionApi } from '../../helpers';
 import { AuthContext } from '../../stores/Auth';
 import Loading from '../../components/Loading';
-import { useLocalObservable } from 'mobx-react';
-import { DateIntervalStore } from '../../stores/DateIntervalStore';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
+import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
 
 export default function TimeReportPage() {
 	const authStore = useContext(AuthContext)
@@ -16,9 +17,9 @@ export default function TimeReportPage() {
 	const [employeeData, setEmployeeData] = useState({} as Employee);
 	const [state, setState] = useState(State.Loading);
 
+	const intervalStore = useLocalObservable(() => new DateIntervalStore());
+	
 	useEffect(() => {
-		if (state === State.Loaded) return;
-
 		loadData()
 		.then((result) => {
 			setEmployeeData(result);
@@ -27,7 +28,7 @@ export default function TimeReportPage() {
 		.catch(error => {
 			setState(State.Error);
 		});
-	});
+	}, []);
 
 	async function loadData() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
@@ -57,7 +58,9 @@ export default function TimeReportPage() {
 	return (
 		<div>
 			<Header/>
-			{mainUi}
+			<DateIntervalContext.Provider value={intervalStore}>
+				{mainUi}
+			</DateIntervalContext.Provider>
 		</div>
 	);
 }

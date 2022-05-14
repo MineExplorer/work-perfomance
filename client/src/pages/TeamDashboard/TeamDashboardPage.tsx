@@ -1,5 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
+import { observer, useLocalObservable } from 'mobx-react';
+
 import { Project, State } from '../../data';
 import Header from '../../components/Header';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
@@ -7,16 +9,14 @@ import { fetchFunctionApi } from '../../helpers';
 import { SelectProject } from '../../components/Select';
 import TeamTimeChart from '../../components/Dashboard/TeamTimeChart';
 import Loading from '../../components/Loading';
-import { DateIntervalStore } from '../../stores/DateIntervalStore';
-import { observer, useLocalObservable } from 'mobx-react';
-import { DateIntervalContext } from '../App/AppContainer';
+import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
 
-export default observer(() => {
+const TeamDashboardPage = () => {
 	const [projects, setProjects] = useState([] as Project[]);
 	const [selectedProject, setSelectedProject] = useState(0);
 	const [state, setState] = useState(State.Loading);
 
-	const intervalStore = useContext(DateIntervalContext);
+	const intervalStore = useLocalObservable(() => new DateIntervalStore());
 
 	useEffect(() => {
 		loadData()
@@ -66,7 +66,11 @@ export default observer(() => {
 	return (
 		<div>
 			<Header/>
-			{mainUi}
+			<DateIntervalContext.Provider value={intervalStore}>
+				{mainUi}
+			</DateIntervalContext.Provider>
 		</div>
 	);
-});
+}
+
+export default observer(TeamDashboardPage);

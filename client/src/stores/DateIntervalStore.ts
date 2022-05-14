@@ -1,5 +1,5 @@
 import { addDays } from 'date-fns';
-import {action, observable} from 'mobx';
+import {action, makeObservable, observable} from 'mobx';
 import { createContext } from 'react';
 import { DateRange } from '../components/Select/SelectDateRange';
 
@@ -14,6 +14,7 @@ export class DateIntervalStore {
 	endDate: Date;
 
 	constructor() {
+		makeObservable(this);
 		this.setInterval(this.dateRange);
 	}
 
@@ -22,15 +23,12 @@ export class DateIntervalStore {
 		const range = parseInt(event.target.value) as DateRange;
 		this.dateRange = range;
 		this.setInterval(range);
-		console.log("new range id: " + this.dateRange);
-		console.log(`${this.startDate} - ${this.endDate}`);
 	}
 
 	@action
 	changePeriod = (direction: number) => {
 		const previousDate = this.changeDate(this.startDate, direction);
 		this.setInterval(this.dateRange, previousDate);
-		console.log(`${this.startDate} - ${this.endDate}`);
 	}
 
 	@action
@@ -74,3 +72,5 @@ export class DateIntervalStore {
 		}
 	}
 }
+
+export const DateIntervalContext = createContext<DateIntervalStore>(null);

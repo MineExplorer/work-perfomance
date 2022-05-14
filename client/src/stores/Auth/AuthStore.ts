@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { Employee } from '../../data';
 import { fetchFunctionApi } from '../../helpers';
 
@@ -15,8 +15,13 @@ export class AuthStore {
 	@observable
 	public userData: Employee;
 
+	constructor() {
+		makeObservable(this);
+		this.fetchUserInfo();
+	}
+
 	@action
-	public fetchUserInfo = async () => {
+	private async fetchUserInfo() {
 		const employeeId = 1;
 
 		try {
