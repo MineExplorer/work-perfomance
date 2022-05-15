@@ -24,7 +24,7 @@ function TimeTable(props: {employeeId: number}) {
 		.catch(error => {
 			setState(State.Error);
 		});
-	}, [startDate, endDate]);
+	}, [props.employeeId, startDate, endDate]);
 
 	async function loadData() {
 		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employeeId}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
