@@ -35,8 +35,8 @@ export class DateIntervalStore {
 
 	@action
 	changePeriod = (direction: number) => {
-		const previousDate = this.changeDate(this.startDate, direction);
-		this.setInterval(this.dateRange, previousDate);
+		const newDate = this.changeDate(this.startDate, direction);
+		this.setInterval(this.dateRange, newDate);
 	}
 
 	@action

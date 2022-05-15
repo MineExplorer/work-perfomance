@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Employee, State, TimeInterval } from '../../data';
-import Header from '../Header';
 import { fetchFunctionApi } from '../../helpers';
 import { DateIntervalContext } from '../../stores/DateIntervalStore';
 import { observer } from 'mobx-react';
+import { DateRange } from '../Select';
 
 function TimeTable(props: {employeeId: number}) {
 	const store = useContext(DateIntervalContext);
-	const {startDate, endDate} = store;
+	const {dateRange, startDate, endDate} = store;
 
 	const [timeRecords, setTimeRecords] = useState([] as TimeInterval[]);
 	const [state, setState] = useState(State.Loading);
@@ -43,6 +43,7 @@ function TimeTable(props: {employeeId: number}) {
 					<tr>
 						<th>Проект</th>
 						<th>Тип задачи</th>
+						{dateRange == DateRange.Day ? null : <th>Дата</th>}
 						<th>Время</th>
 						<th>Описание</th>
 					</tr>
@@ -50,6 +51,7 @@ function TimeTable(props: {employeeId: number}) {
 						return <tr>
 							<td>{value.project}</td>
 							<td>{value.workType}</td>
+							{dateRange == DateRange.Day ? null : <td>{value.date}</td>}
 							<td>{value.duration + 'ч'}</td>
 							<td>{value.description}</td>
 						</tr>
