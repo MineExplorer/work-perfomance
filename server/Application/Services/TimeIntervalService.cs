@@ -17,9 +17,11 @@
             _timeIntervalRepository = timeIntervalRepository;
         }
 
-        public List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId)
+        public List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd)
         {
-            return _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId).
+            DateTime dateStart = DateTime.Parse(rawDateStart);
+            DateTime dateEnd = DateTime.Parse(rawDateEnd);
+            return _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd).
                 Select(x => new TimeIntervalDto(x)).ToList();
         }
 

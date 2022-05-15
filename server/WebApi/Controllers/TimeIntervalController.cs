@@ -22,11 +22,11 @@
         }
 
         [HttpGet]
-        public ActionResult<List<TimeIntervalDto>> GetForEmployee(int employeeId)
+        public ActionResult<List<TimeIntervalDto>> GetForEmployee(int employeeId, string dateStart, string dateEnd)
         {
             try
             {
-                return Ok(_timeIntervalService.GetTimeIntervalsForEmployee(employeeId));
+                return Ok(_timeIntervalService.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd));
             }
             catch (Exception ex)
             {

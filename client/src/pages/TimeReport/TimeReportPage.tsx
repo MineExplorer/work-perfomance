@@ -9,6 +9,7 @@ import { AuthContext } from '../../stores/Auth';
 import Loading from '../../components/Loading';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
 import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
+import TimeTable from '../../components/TimeTable';
 
 export default function TimeReportPage() {
 	const authStore = useContext(AuthContext)
@@ -18,7 +19,7 @@ export default function TimeReportPage() {
 	const [state, setState] = useState(State.Loading);
 
 	const intervalStore = useLocalObservable(() => new DateIntervalStore());
-	
+
 	useEffect(() => {
 		loadData()
 		.then((result) => {
@@ -34,33 +35,28 @@ export default function TimeReportPage() {
 		return await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
 	}
 
-	let mainUi: JSX.Element;
-
-	if (state === State.Loading) {
-		mainUi = <Loading/>
-	}
-	else if (state === State.Error) {
-		mainUi = <Typography>Server unavailable</Typography>
-	}
-	else {
-		mainUi = (
-			<div className="mainbox">
-				<h3>Время работы сотрудника {employeeData.fullName}</h3>
-				<div>
-					<div style={{position: "relative"}}>
-						<DateIntervalHeader/>
+	if (state === State.Loaded) {
+		return (
+			<div>
+				<Header/>
+				<DateIntervalContext.Provider value={intervalStore}>
+					<div className="mainbox">
+						<h3>Время работы сотрудника {employeeData.fullName}</h3>
+						<div>
+							<div style={{position: "relative"}}>
+								<DateIntervalHeader/>
+								<TimeTable employeeId={employeeId}/>
+							</div>
+						</div>
 					</div>
-				</div>
+				</DateIntervalContext.Provider>
 			</div>
-		)
+		);
 	}
 
 	return (
 		<div>
 			<Header/>
-			<DateIntervalContext.Provider value={intervalStore}>
-				{mainUi}
-			</DateIntervalContext.Provider>
 		</div>
-	);
+	)
 }

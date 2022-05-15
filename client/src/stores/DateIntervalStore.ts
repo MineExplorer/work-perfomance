@@ -18,6 +18,14 @@ export class DateIntervalStore {
 		this.setInterval(this.dateRange);
 	}
 
+	getStartDateStr = () => {
+		return this.startDate.toLocaleDateString();
+	}
+
+	getEndDateStr = () => {
+		return this.endDate.toLocaleDateString();
+	}
+
 	@action
 	onDateRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const range = parseInt(event.target.value) as DateRange;

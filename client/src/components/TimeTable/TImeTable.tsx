@@ -1,62 +1,63 @@
-import { useEffect, useState } from 'react';
-import addDays from 'date-fns/addDays'
+import { useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Employee, State, TimeInterval } from '../../data';
-import Header from '../../components/Header';
+import Header from '../Header';
 import { fetchFunctionApi } from '../../helpers';
+import { DateIntervalContext } from '../../stores/DateIntervalStore';
+import { observer } from 'mobx-react';
 
-export default function TimeReportPage(props: {employeeId: number, dateStart: Date, dateEnd: Date}) {
-	const defaultDateRange = 7;
-	const [dateEnd, setDateEnd] = useState(new Date(Date.now()));
-	const [dateStart, setDateStart] = useState(addDays(dateEnd, -defaultDateRange + 1));
+function TimeTable(props: {employeeId: number}) {
+	const store = useContext(DateIntervalContext);
+	const {startDate, endDate} = store;
 
-	const [timeData, setTimeData] = useState([] as TimeInterval[]);
+	const [timeRecords, setTimeRecords] = useState([] as TimeInterval[]);
 	const [state, setState] = useState(State.Loading);
 
 	useEffect(() => {
-		if (state === State.Loaded) return;
-
 		loadData()
 		.then(
 			(result) => {
-				setTimeData(result);
+				setTimeRecords(result);
 				setState(State.Loaded);
 			}
 		)
 		.catch(error => {
 			setState(State.Error);
 		});
-	});
+	}, [startDate, endDate]);
 
 	async function loadData() {
-		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employeeId}`);
+		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employeeId}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
 	}
-
-	function onTimeRangeChange(event: React.ChangeEvent<HTMLInputElement>) {
-		const range = parseInt(event.target.value);
-		setDateStart(addDays(dateEnd, -range + 1));
-	}
-
-	let mainUi: JSX.Element;
 
 	if (state === State.Loading) {
-		mainUi = <Typography>Loading...</Typography>
+		return <Typography>Loading...</Typography>
 	}
 	else if (state === State.Error) {
-		mainUi = <Typography>Server unavailable</Typography>
+		return <Typography>Server unavailable</Typography>
 	}
 	else {
-		mainUi = (
+		return (
 			<div className="mainbox">
-				
+				<table>
+					<tr>
+						<th>Проект</th>
+						<th>Тип задачи</th>
+						<th>Время</th>
+						<th>Описание</th>
+					</tr>
+					{timeRecords.map(value => {
+						return <tr>
+							<td>{value.project}</td>
+							<td>{value.workType}</td>
+							<td>{value.duration + 'ч'}</td>
+							<td>{value.description}</td>
+						</tr>
+					})}
+				</table>
 			</div>
 		)
 	}
-
-	return (
-		<div>
-			<Header/>
-			{mainUi}
-		</div>
-	);
 }
+
+export default observer(TimeTable);
