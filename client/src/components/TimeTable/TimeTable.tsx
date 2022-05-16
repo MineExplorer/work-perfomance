@@ -4,9 +4,11 @@ import { Employee, State, TimeInterval } from '../../data';
 import { fetchFunctionApi } from '../../helpers';
 import { DateIntervalContext } from '../../stores/DateIntervalStore';
 import { observer } from 'mobx-react';
-import { DateRange } from '../Select';
+import { DateRange, SelectProject } from '../Select';
+import { makeStyles, Paper, Table, TableBody } from '@mui/material';
+import { TableHead, TableRow, TableCell } from '@mui/material';
 
-function TimeTable(props: {employeeId: number}) {
+function TimeTable(props: {employee: Employee}) {
 	const store = useContext(DateIntervalContext);
 	const {dateRange, startDate, endDate} = store;
 
@@ -24,10 +26,10 @@ function TimeTable(props: {employeeId: number}) {
 		.catch(error => {
 			setState(State.Error);
 		});
-	}, [props.employeeId, startDate, endDate]);
+	}, [props.employee, startDate, endDate]);
 
 	async function loadData() {
-		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employeeId}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
+		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employee.id}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
 	}
 
 	if (state === State.Loading) {
@@ -37,27 +39,44 @@ function TimeTable(props: {employeeId: number}) {
 		return <Typography>Server unavailable</Typography>
 	}
 	else {
+		let sum = 0;
+		timeRecords.forEach(val => sum += val.duration);
+
+		const requiredTime = 8 * (dateRange == DateRange.Week ? 5 : dateRange == DateRange.Month ? 21 : 1);
+
 		return (
-			<div className="mainbox">
-				<table>
-					<tr>
-						<th>Проект</th>
-						<th>Тип задачи</th>
-						{dateRange == DateRange.Day ? null : <th>Дата</th>}
-						<th>Время</th>
-						<th>Описание</th>
-					</tr>
-					{timeRecords.map(value => {
-						return <tr>
-							<td>{value.project}</td>
-							<td>{value.workType}</td>
-							{dateRange == DateRange.Day ? null : <td>{value.date}</td>}
-							<td>{value.duration + 'ч'}</td>
-							<td>{value.description}</td>
-						</tr>
-					})}
-				</table>
-			</div>
+			<Paper style={{maxWidth: 1000}}>
+				<Table>
+					<colgroup>
+						<col style={{width:'25%'}}/>
+						<col style={{width:'15%'}}/>
+						<col style={{width:'10%'}}/>
+						<col style={{width:'10%'}}/>
+						<col style={{width:'40%'}}/>
+					</colgroup>
+					<TableHead>
+						<TableRow>
+							<TableCell style={{fontWeight: "bold"}}>Проект</TableCell>
+							<TableCell style={{fontWeight: "bold"}}>Тип задачи</TableCell>
+							{dateRange == DateRange.Day ? null : <TableCell style={{fontWeight: "bold"}}>Дата</TableCell>}
+							<TableCell style={{fontWeight: "bold"}}>Время</TableCell>
+							<TableCell style={{fontWeight: "bold"}}>Описание</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{timeRecords.map(row => {
+							return <TableRow key={row.id}>
+								<TableCell>{row.project}</TableCell>								
+								<TableCell>{row.workType}</TableCell>
+								{dateRange == DateRange.Day ? null : <TableCell>{row.date}</TableCell>}
+								<TableCell>{row.duration + 'ч'}</TableCell>
+								<TableCell>{row.description}</TableCell>
+							</TableRow>
+						})}
+					</TableBody>
+				</Table>
+				<p>{`Время работы: ${sum} из ${requiredTime} часов`}</p>
+			</Paper>
 		)
 	}
 }

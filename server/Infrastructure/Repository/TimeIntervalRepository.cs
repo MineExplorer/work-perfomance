@@ -16,12 +16,14 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<TimeInterval> GetTimeIntervalsForEmployee(int employeeId, DateTime startDate, DateTime endDate)
+        public List<TimeInterval> GetTimeIntervalsForEmployee(int employeeId, DateTime startDate, DateTime endDate)
         {
             return context.TimeIntervals.AsNoTracking().
                 Where(e => e.EmployeeId == employeeId && e.Date >= startDate && e.Date <= endDate).
                 Include(e => e.Project).
-                Include(e => e.WorkType);
+                Include(e => e.WorkType).
+                OrderBy(e => e.Date).
+                ToList();
         }
         
         public Dictionary<int, List<TimeInterval>> GetTimeIntervalsForEmployeeProjects(int employeeId, DateTime startDate, DateTime endDate)

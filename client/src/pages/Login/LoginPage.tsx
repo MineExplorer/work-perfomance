@@ -12,7 +12,7 @@ export default function LoginPage() {
 			<input id="login"/>
 			<p>Пароль</p>
 			<input id="password"/>
-			<NavLink to="/dashboard" className="buttonEnter" onClick={authorize}>Вход</NavLink>
+			<NavLink to="/timetable" className="buttonEnter" onClick={authorize}>Вход</NavLink>
 		</div>
 	)
 }

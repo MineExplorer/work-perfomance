@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
 import { useLocalObservable } from 'mobx-react';
 
 import { Employee, State } from '../../data';
 import Header from '../../components/Header';
 import { fetchFunctionApi } from '../../helpers';
 import { AuthContext } from '../../stores/Auth';
-import Loading from '../../components/Loading';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
 import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
 import TimeTable from '../../components/TimeTable';
@@ -45,7 +43,7 @@ export default function TimeReportPage() {
 						<div>
 							<div style={{position: "relative"}}>
 								<DateIntervalHeader/>
-								<TimeTable employeeId={employeeId}/>
+								<TimeTable employee={employeeData}/>
 							</div>
 						</div>
 					</div>

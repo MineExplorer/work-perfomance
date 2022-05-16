@@ -18,7 +18,7 @@ function DateIntervalHeader() {
 				onClick={() => changePeriod(-1)}
 				startIcon={<ArrowBack/>}
 			/>
-			<p style={{fontWeight: "bold"}}>{intervalStr}</p>
+			<p style={{fontWeight: "bold", margin: 5}}>{intervalStr}</p>
 			<Button
 				variant="contained"
 				onClick={() => changePeriod(1)}
