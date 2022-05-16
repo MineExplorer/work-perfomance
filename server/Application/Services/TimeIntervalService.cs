@@ -24,6 +24,20 @@
             return _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd).
                 Select(x => new TimeIntervalDto(x)).ToList();
         }
+        
+        public Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd)
+        {
+            DateTime dateStart = DateTime.Parse(rawDateStart);
+            DateTime dateEnd = DateTime.Parse(rawDateEnd);
+            var timeByWorkType = new Dictionary<int, float>();
+            _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd).
+                ForEach(i =>
+                {
+                    timeByWorkType.TryGetValue(i.WorkType.Id, out float value);
+                    timeByWorkType[i.WorkType.Id] = value + i.Duration;
+                });
+            return timeByWorkType;
+        }
 
         public Dictionary<int, List<float>> GetTimeStatsForPeriod(int employeeId, string rawDateStart, string rawDateEnd)
         {

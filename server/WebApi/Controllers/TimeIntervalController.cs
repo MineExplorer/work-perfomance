@@ -33,7 +33,20 @@
                 return InternalErrorResult(ex);
             }
         }
-        
+
+        [HttpGet("worktypes")]
+        public ActionResult<Dictionary<int, float>> GetTotalTimeByWorkType(int employeeId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(_timeIntervalService.GetTotalTimeByWorkType(employeeId, dateStart, dateEnd));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
         [HttpGet("stats")]
         public ActionResult<Dictionary<int, List<float>>> GetTimeStatsForPeriod(int employeeId, string dateStart, string dateEnd)
         {
