@@ -11,6 +11,7 @@ import { AuthContext } from '../../stores/Auth';
 import Loading from '../../components/Loading';
 import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
+import TimeStat from '../../components/Dashboard/TimeStat';
 
 const DashboardPage: React.FC = () => {
 	const store = useContext(AuthContext)
@@ -51,6 +52,7 @@ const DashboardPage: React.FC = () => {
 					<div style={{position: "relative"}}>
 						<DateIntervalHeader/>
 						<EmployeeTimeChart employee={employeeData} dateStart={intervalStore.startDate} dateEnd={intervalStore.endDate}/>
+						<TimeStat employeeId={employeeId}/>
 					</div>
 				</div>
 			</div>
