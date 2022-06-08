@@ -1,17 +1,17 @@
+using Application.Services;
+using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
+
 namespace WebApi
 {
-    using Application.Services;
-    using Infrastructure.Repositories;
-    using Infrastructure.EF;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.OpenApi.Models;
-    using System.Text.Json.Serialization;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -41,9 +41,12 @@ namespace WebApi
             services.AddScoped<EmployeeService>();
             services.AddScoped<TimeIntervalService>();
             services.AddScoped<ProjectService>();
+            services.AddScoped<TaskService>();
+
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<TimeIntervalRepository>();
             services.AddScoped<ProjectRepository>();
+            services.AddScoped<TaskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

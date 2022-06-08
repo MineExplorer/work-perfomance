@@ -101,9 +101,13 @@ function TimeStat(props: {employeeId: number}) {
 
   return (
     <div style={{marginLeft: 50, textAlign: "left"}}>
-      <h3>Статистика по типу работы</h3>
+      <h3>Продуктивность</h3>
       <canvas ref={canvasRef} width={500} height={50}/>
       {timeText}
+      <br/><p>Решено задач: 11</p>
+      <p>Время выполнения: 55 ч</p>
+      <p>Ожидаемое время выполнения: 45 ч</p>
+      <p>Эффективность решения задач: 0.81</p>
     </div>
   );
 }

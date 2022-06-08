@@ -1,13 +1,13 @@
-﻿namespace WebApi.Controllers
-{
-    using System;
-    using System.Collections.Generic;
-    using Application.DTO.Request;
-    using Application.Services;
-    using Application.ViewModels;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Application.DTO.Request;
+using Application.Services;
+using Application.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
+namespace WebApi.Controllers
+{
     [ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase

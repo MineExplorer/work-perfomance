@@ -10,23 +10,27 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectController : ControllerBase
+    public class TaskController : ControllerBase
     {
-        private readonly ILogger<ProjectController> logger;
-        private ProjectService _projectService;
+        private readonly ILogger<TaskController> logger;
+        private TaskService _taskService;
 
-        public ProjectController(ILogger<ProjectController> logger, ProjectService projectService)
+        public TaskController(ILogger<TaskController> logger, TaskService taskService)
         {
             this.logger = logger;
-            _projectService = projectService;
+            _taskService = taskService;
         }
 
-        [HttpGet]
-        public ActionResult<List<ProjectDto>> GetAll()
+        [HttpGet("{id}")]
+        public ActionResult<TaskDto> Get(int id)
         {
             try
             {
-                return Ok(_projectService.GetProjects());
+                return Ok(_taskService.GetTask(id));
+            }
+            catch (KeyNotFoundException)
+            {
+                return TaskNotFound(id);
             }
             catch (Exception ex)
             {
@@ -34,16 +38,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<ProjectDto> Get(int id)
+        [HttpGet]
+        public ActionResult<List<TimeIntervalDto>> GetForEmployee(int employeeId)
         {
             try
             {
-                return Ok(_projectService.GetProject(id));
-            }
-            catch (KeyNotFoundException)
-            {
-                return ProjectNotFound(id);
+                return Ok(_taskService.GetTasksForEmployee(employeeId));
             }
             catch (Exception ex)
             {
@@ -52,11 +52,11 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ProjectDto> Insert([FromBody] ProjectCreateRequestDto project)
+        public ActionResult<TaskDto> Insert([FromBody] TaskCreateRequestDto task)
         {
             try
             {
-                return Ok(_projectService.InsertProject(project));
+                return Ok(_taskService.InsertTask(task));
             }
             catch (Exception ex)
             {
@@ -64,13 +64,13 @@ namespace WebApi.Controllers
             }
         }
 
-        private ActionResult ProjectNotFound(int id)
+        private ActionResult TaskNotFound(int id)
         {
             var error = new ErrorDto
             {
                 Code = "NotFound",
-                Message = $"Project with id {id} not found",
-                Target = "ProjectId",
+                Message = $"Task with id {id} not found",
+                Target = "TaskId",
             };
 
             return NotFound(error);
