@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Employee, State, TimeInterval } from '../../data';
-import { fetchFunctionApi } from '../../helpers';
+import { fetchFunctionApi, deleteFunctionApi } from '../../helpers';
 import { DateIntervalContext } from '../../stores/DateIntervalStore';
 import { observer } from 'mobx-react';
 import { DateRange, SelectProject } from '../Select';
-import { makeStyles, Paper, Table, TableBody } from '@mui/material';
+import { Button, makeStyles, Paper, Table, TableBody } from '@mui/material';
 import { TableHead, TableRow, TableCell } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 function TimeTable(props: {employee: Employee}) {
 	const store = useContext(DateIntervalContext);
@@ -30,6 +31,13 @@ function TimeTable(props: {employee: Employee}) {
 
 	async function loadData() {
 		return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employee.id}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
+	}
+
+	async function deleteRow(i: number, row: TimeInterval) {
+		const list = [...timeRecords];
+		list.splice(i, 1);
+		setTimeRecords(list);
+		return await deleteFunctionApi(`/TimeInterval/${row.id}`);
 	}
 
 	if (state === State.Loading) {
@@ -61,16 +69,22 @@ function TimeTable(props: {employee: Employee}) {
 							{dateRange == DateRange.Day ? null : <TableCell style={{fontWeight: "bold"}}>Дата</TableCell>}
 							<TableCell style={{fontWeight: "bold"}}>Время</TableCell>
 							<TableCell style={{fontWeight: "bold"}}>Описание</TableCell>
+							<TableCell/>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{timeRecords.map(row => {
+						{timeRecords.map((row, i) => {
 							return <TableRow key={row.id}>
 								<TableCell>{row.project}</TableCell>								
 								<TableCell>{row.workType}</TableCell>
 								{dateRange == DateRange.Day ? null : <TableCell>{row.date}</TableCell>}
 								<TableCell>{row.duration + 'ч'}</TableCell>
 								<TableCell>{row.description}</TableCell>
+								<TableCell>
+									<Button onClick={() => deleteRow(i, row)}>
+										<DeleteOutlineIcon />
+									</Button>
+								</TableCell>
 							</TableRow>
 						})}
 					</TableBody>
