@@ -13,5 +13,7 @@ namespace Domain.Models
 
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
+
+        public bool Active { get; set; }
     }
 }

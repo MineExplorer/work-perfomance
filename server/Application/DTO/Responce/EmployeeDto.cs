@@ -14,7 +14,7 @@ namespace Application.ViewModels
             Password = employee.Password;
             Seniority = (int)employee.Seniority;
             Experience = employee.Experience;
-            TechStack = employee.TechStack;
+            HourlyRate = employee.HourlyRate;
             PermissionLevel = (int)employee.PermissionLevel;
             WorkDayDuration = employee.WorkDayDuration;
             Created = employee.Created;
@@ -42,7 +42,7 @@ namespace Application.ViewModels
 
         public int Experience { get; set; }
 
-        public string TechStack { get; set; }
+        public float HourlyRate { get; set; }
 
         public float WorkDayDuration { get; set; }
 

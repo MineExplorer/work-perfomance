@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
                 entity.Password = employee.Password;
                 entity.Seniority = employee.Seniority;
                 entity.Experience = employee.Experience;
-                entity.TechStack = employee.TechStack;
+                entity.HourlyRate = employee.HourlyRate;
                 entity.PermissionLevel = employee.PermissionLevel;
                 context.SaveChanges();
                 return entity;

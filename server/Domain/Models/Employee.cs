@@ -9,6 +9,8 @@
     {
         public int Id { get; set; }
 
+        public int ExternalID { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string Email { get; set; }
@@ -27,7 +29,7 @@
         
         public int Experience { get; set; }
 
-        public string TechStack { get; set; }
+        public float HourlyRate { get; set; }
 
         public float WorkDayDuration { get; set; }
 

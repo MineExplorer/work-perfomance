@@ -18,7 +18,7 @@ namespace Application.DTO.Request
 
         public int Experience { get; set; }
 
-        public string TechStack { get; set; }
+        public float HourlyRate { get; set; }
 
         public Employee ToModel()
         {
@@ -29,7 +29,7 @@ namespace Application.DTO.Request
                 Password = this.Password,
                 Seniority = (Seniority) this.Seniority,
                 Experience = this.Experience,
-                TechStack = this.TechStack,
+                HourlyRate = this.HourlyRate,
                 PermissionLevel = (PermissionLevel) this.PermissionLevel
             };
             
