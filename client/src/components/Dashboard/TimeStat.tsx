@@ -1,7 +1,5 @@
-import {addDays, differenceInDays} from 'date-fns';
 import { observer } from 'mobx-react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Employee, Project } from '../../data';
 import { fetchFunctionApi, lineColors } from '../../helpers';
 import { DateIntervalContext } from '../../stores/DateIntervalStore';
 
@@ -53,7 +51,6 @@ function TimeStat(props: {employeeId: number}) {
       const val = array[i] * canvasEl.width;
       ctx.fillStyle = fillColors[parseInt(i) % fillColors.length];
       ctx.fillRect(prevVal, 0, val, 100);
-      console.log("draw")
       prevVal += val;
     }
   }, [totalTime]);

@@ -30,7 +30,7 @@ export class DateIntervalStore {
 	onDateRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const range = parseInt(event.target.value) as DateRange;
 		this.dateRange = range;
-		this.setInterval(range);
+		this.setInterval(range, this.startDate);
 	}
 
 	@action

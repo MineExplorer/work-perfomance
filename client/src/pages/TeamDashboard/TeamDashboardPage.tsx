@@ -53,7 +53,11 @@ const TeamDashboardPage = () => {
 			<div className="mainbox">
 				<h3>Статистика проекта {project.title}</h3>
 				<div style={{display: "flex", alignItems: 'flex-start', position: 'relative', left: -100}}>
-					<SelectProject projects={projects} onChange={onProjectChange}/>
+					<SelectProject
+            style={{padding: '5px 0px'}}
+            projects={projects}
+            onChange={onProjectChange}
+          />
 					<div style={{paddingLeft: 30}}>
 						<DateIntervalHeader/>
 						<TeamTimeChart project={project} dateStart={intervalStore.startDate} dateEnd={intervalStore.endDate}/>

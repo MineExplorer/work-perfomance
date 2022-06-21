@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useLocalObservable } from 'mobx-react';
+import { Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 import { Employee, State } from '../../data';
 import Header from '../../components/Header';
@@ -42,7 +44,11 @@ export default function TimeReportPage() {
 						<h3>Время работы сотрудника {employeeData.fullName}</h3>
 						<div>
 							<div style={{position: "relative"}}>
-								<DateIntervalHeader/>
+								<DateIntervalHeader>
+									<Button onClick={() => void 0}>
+										<AddIcon/>
+									</Button>
+								</DateIntervalHeader>
 								<TimeTable employee={employeeData}/>
 							</div>
 						</div>

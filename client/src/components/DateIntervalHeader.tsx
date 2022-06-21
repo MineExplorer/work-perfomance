@@ -5,7 +5,7 @@ import { SelectDateRange } from './Select';
 import { observer } from 'mobx-react-lite';
 import { DateIntervalContext } from '../stores/DateIntervalStore';
 
-function DateIntervalHeader() {
+function DateIntervalHeader(props: {children?}) {
 	const store = useContext(DateIntervalContext);
 	const {startDate, endDate, onDateRangeChange, changePeriod} = store;
 
@@ -24,6 +24,7 @@ function DateIntervalHeader() {
 				onClick={() => changePeriod(1)}
 				startIcon={<ArrowForward/>}
 			/>
+			{props.children}
 		</div>
 	);
 }
