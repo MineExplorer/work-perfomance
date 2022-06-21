@@ -11,7 +11,7 @@ export default function LoginPage() {
 			<p>Email</p>
 			<input id="login"/>
 			<p>Пароль</p>
-			<input id="password"/>
+			<input id="password" type="password"/>
 			<NavLink to="/timetable" className="buttonEnter" onClick={authorize}>Вход</NavLink>
 		</div>
 	)

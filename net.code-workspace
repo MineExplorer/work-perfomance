@@ -13,5 +13,8 @@
 			"path": "client"
 		},
 	],
-	"settings": {}
+	"settings": {
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false
+	}
 }
