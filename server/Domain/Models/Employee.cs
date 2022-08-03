@@ -1,10 +1,10 @@
-﻿namespace Domain.Models
-{
-    using Domain.Enums;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+﻿using Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace Domain.Models
+{
     public class Employee : Entity
     {
         public int ExternalID { get; set; }

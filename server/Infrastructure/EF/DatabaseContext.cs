@@ -1,8 +1,8 @@
-﻿namespace Infrastructure.EF
-{
-    using Domain.Models;
-    using Microsoft.EntityFrameworkCore;
+﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
+namespace Infrastructure.EF
+{
     public class DatabaseContext : DbContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
