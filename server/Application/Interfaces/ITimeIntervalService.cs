@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.DTO.Request;
 using Application.ViewModels;
 
@@ -11,7 +12,7 @@ namespace Application.Interfaces
         /// </summary>
         /// <param name="id">Time interval id</param>
         /// <returns>Time interval data</returns>
-        TimeIntervalDto GetTimeInterval(int id);
+        Task<TimeIntervalDto> GetAsync(int id);
 
         /// <summary>
         /// Returns all time intervals for employee
@@ -27,7 +28,7 @@ namespace Application.Interfaces
         /// </summary>
         /// <param name="timeInterval">Time interval data to create</param>
         /// <returns>Created time interval</returns>
-        TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval);
+        Task<TimeIntervalDto> CreateAsync(TimeIntervalCreateRequestDto timeInterval);
 
         /// <summary>
         /// Updates time interval
@@ -35,13 +36,13 @@ namespace Application.Interfaces
         /// <param name="id">Time interval id</param>
         /// <param name="timeInterval">Time interval data to update</param>
         /// <returns>Updated time interval</returns>
-        TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval);
+        Task<TimeIntervalDto> UpdateAsync(int id, TimeIntervalCreateRequestDto timeInterval);
 
         /// <summary>
         /// Deletes time interval by id
         /// </summary>
         /// <param name="id">Time interval id</param>
-        void DeleteTimeInterval(int id);
+        Task DeleteAsync(int id);
 
         Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd);
 

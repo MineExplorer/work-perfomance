@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Domain.Models;
@@ -17,42 +18,47 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public TimeInterval Get(int id)
+        public async Task<TimeInterval> GetAsync(int id)
         {
-            TimeInterval timeInterval = context.TimeIntervals.Find(id);
+            TimeInterval entity = await context.TimeIntervals.FindAsync(id);
+            if (entity == null)
+            {
+                throw new KeyNotFoundException($"Task with id {id} not found");
+            }
+            return entity;
+        }
+        
+        public async Task<TimeInterval> CreateAsync(TimeInterval timeInterval)
+        {
+            context.Add(timeInterval);
+            await context.SaveChangesAsync();
             return timeInterval;
         }
         
-        public TimeInterval Create(TimeInterval timeInterval)
+        public async Task<TimeInterval> UpdateAsync(int id, TimeInterval timeInterval)
         {
-            var entity = context.Add(timeInterval);
-            context.SaveChanges();
-            return entity.Entity;
-        }
-        
-        public TimeInterval Update(int id, TimeInterval timeInterval)
-        {
-            TimeInterval entity = context.TimeIntervals.Find(id);
-            if (entity != null)
+            TimeInterval entity = await context.TimeIntervals.FindAsync(id);
+            if (entity == null)
             {
-                entity.ProjectId = timeInterval.ProjectId;
-                entity.Duration = timeInterval.Duration;
-                entity.Description = timeInterval.Description;
-                entity.Date = timeInterval.Date;
-                context.SaveChanges();
-                return entity;
+                throw new KeyNotFoundException($"Task with id {entity.Id} not found");
             }
 
-            return null;
+            entity.ProjectId = timeInterval.ProjectId;
+            entity.Duration = timeInterval.Duration;
+            entity.Description = timeInterval.Description;
+            entity.Date = timeInterval.Date;
+            context.Update(entity);
+            await context.SaveChangesAsync();
+            return entity;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            TimeInterval entity = context.TimeIntervals.Find(id);
+            TimeInterval entity = await context.TimeIntervals.FindAsync(id);
             if (entity != null)
             {
                 context.Remove(entity);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 

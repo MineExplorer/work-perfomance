@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
@@ -72,13 +74,16 @@ namespace WebApi.Controllers
                 return InternalErrorResult(ex);
             }
         }
-        /*
+        
         [HttpGet("{id}")]
-        public ActionResult<TimeIntervalDto> Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TimeIntervalDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return Ok(_timeIntervalService.GetTimeInterval(id));
+                return Ok(await _timeIntervalService.GetAsync(id));
             }
             catch (KeyNotFoundException)
             {
@@ -88,14 +93,16 @@ namespace WebApi.Controllers
             {
                 return InternalErrorResult(ex.InnerException);
             }
-        }*/
+        }
 
         [HttpPost]
-        public ActionResult<TimeIntervalDto> Insert([FromBody] TimeIntervalCreateRequestDto timeInterval)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TimeIntervalDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> Create([FromBody] TimeIntervalCreateRequestDto timeInterval)
         {
             try
             {
-                return Ok(_timeIntervalService.InsertTimeInterval(timeInterval));
+                return Ok(await _timeIntervalService.CreateAsync(timeInterval));
             }
             catch (Exception ex)
             {
@@ -104,11 +111,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<TimeIntervalDto> Update(int id, [FromBody] TimeIntervalCreateRequestDto timeInterval)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TimeIntervalDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> Update(int id, [FromBody] TimeIntervalCreateRequestDto timeInterval)
         {
             try
             {
-                return Ok(_timeIntervalService.UpdateTimeInterval(id, timeInterval));
+                return Ok(await _timeIntervalService.UpdateAsync(id, timeInterval));
             }
             catch (KeyNotFoundException)
             {
@@ -121,11 +131,11 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _timeIntervalService.DeleteTimeInterval(id);
+                await _timeIntervalService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

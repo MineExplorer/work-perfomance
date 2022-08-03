@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -18,14 +19,9 @@ namespace Application.Services
             _timeIntervalRepository = timeIntervalRepository;
         }
 
-        public TimeIntervalDto GetTimeInterval(int id)
+        public async Task<TimeIntervalDto> GetAsync(int id)
         {
-            TimeInterval result = _timeIntervalRepository.Get(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
+            TimeInterval result = await _timeIntervalRepository.GetAsync(id);
             return new TimeIntervalDto(result);
         }
 
@@ -37,25 +33,21 @@ namespace Application.Services
                 Select(x => new TimeIntervalDto(x)).ToList();
         }
 
-        public TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval)
+        public async Task<TimeIntervalDto> CreateAsync(TimeIntervalCreateRequestDto timeInterval)
         {
-            return new TimeIntervalDto(_timeIntervalRepository.Create(timeInterval.ToModel()));
-        }
-
-        public TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval)
-        {
-            TimeInterval result = _timeIntervalRepository.Update(id, timeInterval.ToModel());
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
+            TimeInterval result = await _timeIntervalRepository.CreateAsync(timeInterval.ToModel());
             return new TimeIntervalDto(result);
         }
 
-        public void DeleteTimeInterval(int id)
+        public async Task<TimeIntervalDto> UpdateAsync(int id, TimeIntervalCreateRequestDto timeInterval)
         {
-            _timeIntervalRepository.Delete(id);
+            TimeInterval result = await _timeIntervalRepository.UpdateAsync(id, timeInterval.ToModel());
+            return new TimeIntervalDto(result);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _timeIntervalRepository.DeleteAsync(id);
         }
 
         public Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd)

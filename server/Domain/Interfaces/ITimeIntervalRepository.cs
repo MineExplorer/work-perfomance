@@ -12,14 +12,14 @@ namespace Domain.Interfaces
         /// </summary>
         /// <param name="id">Time interval id</param>
         /// <returns>Time interval data</returns>
-        TimeInterval Get(int id);
+        Task<TimeInterval> GetAsync(int id);
 
         /// <summary>
         /// Creates time interval
         /// </summary>
         /// <param name="timeInterval">Time interval data to create</param>
         /// <returns>Created time interval</returns>
-        TimeInterval Create(TimeInterval timeInterval);
+        Task<TimeInterval> CreateAsync(TimeInterval timeInterval);
 
         // <summary>
         /// Updates time interval
@@ -27,13 +27,13 @@ namespace Domain.Interfaces
         /// <param name="id">Time interval id</param>
         /// <param name="timeInterval">Time interval data to update</param>
         /// <returns>Updated time interval</returns>
-        TimeInterval Update(int id, TimeInterval timeInterval);
+        Task<TimeInterval> UpdateAsync(int id, TimeInterval timeInterval);
 
         /// <summary>
         /// Deletes time interval by id
         /// </summary>
         /// <param name="id">Time interval id</param>
-        void Delete(int id);
+        Task DeleteAsync(int id);
 
         List<TimeInterval> GetAllForEmployee(int employeeId, DateTime startDate, DateTime endDate);
 
