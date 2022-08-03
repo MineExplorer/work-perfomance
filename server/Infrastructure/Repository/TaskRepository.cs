@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class TaskRepository
+    public class TaskRepository : ITaskRepository
     {
         private DatabaseContext context;
 
@@ -15,32 +16,32 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<Task> GetTasks()
+        public IQueryable<TaskEntity> GetAll()
         {
             return context.Tasks.AsNoTracking();
         }
 
-        public Task GetTask(int id)
+        public TaskEntity Get(int id)
         {
             return context.Tasks.Find(id);
         }
         
-        public List<Task> GetTasksForEmployee(int employeeId)
+        public List<TaskEntity> GetAllForEmployee(int employeeId)
         {
-            List<Task> feedbackList = GetTasks().Where(e => e.EmployeeId == employeeId).ToList();
+            List<TaskEntity> feedbackList = GetAll().Where(e => e.EmployeeId == employeeId).ToList();
             return feedbackList;
         }
 
-        public Task InsertTask(Task task)
+        public TaskEntity Create(TaskEntity task)
         {
             var entity = context.Add(task);
             context.SaveChanges();
             return entity.Entity;
         }
 
-        public void DeleteTask(int id)
+        public void Delete(int id)
         {
-            Task entity = context.Tasks.Find(id);
+            TaskEntity entity = context.Tasks.Find(id);
             if (entity != null)
             {
                 context.Remove(entity);

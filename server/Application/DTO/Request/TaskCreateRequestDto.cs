@@ -5,7 +5,7 @@ using System;
 
 namespace Application.DTO.Request
 {
-    public class TaskCreateRequestDto : IDtoMapper<Task>
+    public class TaskCreateRequestDto : IDtoMapper<TaskEntity>
     {
         public int EmployeeId { get; set; }
 
@@ -17,9 +17,9 @@ namespace Application.DTO.Request
 
         public float SpentTime { get; set; }
 
-        public Task ToModel()
+        public TaskEntity ToModel()
         {
-            return new Task()
+            return new TaskEntity()
             {
                 EmployeeId = this.EmployeeId,
                 Title = this.Title,

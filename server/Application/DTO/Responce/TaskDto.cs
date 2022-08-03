@@ -5,7 +5,7 @@ namespace Application.ViewModels
 {
     public class TaskDto
     {
-        public TaskDto(Task task)
+        public TaskDto(TaskEntity task)
         {
             Id = task.Id;
             EmployeeId = task.EmployeeId;

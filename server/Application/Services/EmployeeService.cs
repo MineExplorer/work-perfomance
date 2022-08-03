@@ -1,32 +1,30 @@
-﻿namespace Application.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Application.DTO.Request;
-    using Application.Interfaces;
-    using Application.ViewModels;
-    using Domain.Enums;
-    using Domain.Models;
-    using Infrastructure.Repositories;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Application.DTO.Request;
+using Application.Interfaces;
+using Application.ViewModels;
+using Domain.Interfaces;
+using Domain.Models;
 
+namespace Application.Services
+{
     public class EmployeeService : IEmployeeService
     {
-        private EmployeeRepository _employeeRepository;
+        private IEmployeeRepository _employeeRepository;
 
-        public EmployeeService(EmployeeRepository employeeRepository)
+        public EmployeeService(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
         }
 
         public List<EmployeeDto> GetEmployees()
         {
-            return _employeeRepository.GetEmployees().Select(x => new EmployeeDto(x, false)).ToList();
+            return _employeeRepository.GetAll().Select(x => new EmployeeDto(x, false)).ToList();
         }
 
         public EmployeeDto GetEmployee(int id)
         {
-            Employee result = _employeeRepository.GetEmployee(id);
+            Employee result = _employeeRepository.Get(id);
             if (result == null)
             {
                 throw new KeyNotFoundException();
@@ -37,12 +35,12 @@
 
         public EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee)
         {
-            return new EmployeeDto(_employeeRepository.InsertEmployee(employee.ToModel()));
+            return new EmployeeDto(_employeeRepository.Create(employee.ToModel()));
         }
 
         public EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee)
         {
-            Employee result = _employeeRepository.UpdateEmployee(id, employee.ToModel());
+            Employee result = _employeeRepository.Update(id, employee.ToModel());
             if (result == null)
             {
                 throw new KeyNotFoundException();
@@ -53,7 +51,7 @@
 
         public void DeleteEmployee(int id)
         {
-            _employeeRepository.DeleteEmployee(id);
+            _employeeRepository.Delete(id);
         }
     }
 }

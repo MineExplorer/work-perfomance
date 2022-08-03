@@ -1,6 +1,3 @@
-using Application.Services;
-using Infrastructure.Repositories;
-using Infrastructure.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+
+using Domain.Interfaces;
 using Application.Interfaces;
+using Application.Services;
+using Infrastructure.Repositories;
+using Infrastructure.EF;
 
 namespace WebApi
 {
@@ -44,10 +46,10 @@ namespace WebApi
             services.AddScoped<ITimeIntervalService, TimeIntervalService>();
             services.AddScoped<ITaskService, TaskService>();
 
-            services.AddScoped<EmployeeRepository>();
-            services.AddScoped<ProjectRepository>();
-            services.AddScoped<TimeIntervalRepository>();
-            services.AddScoped<TaskRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<ITimeIntervalRepository, TimeIntervalRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

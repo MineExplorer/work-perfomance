@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ProjectRepository
+    public class ProjectRepository : IProjectRepository
     {
         private DatabaseContext context;
 
@@ -14,17 +15,17 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<Project> GetProjects()
+        public IQueryable<Project> GetAll()
         {
             return context.Projects.AsNoTracking().Include(e => e.ProjectEmployees).ThenInclude(e => e.Employee);
         }
 
-        public Project GetProject(int id)
+        public Project Get(int id)
         {
-            return GetProjects().Where(p => p.Id == id).FirstOrDefault();
+            return GetAll().Where(p => p.Id == id).FirstOrDefault();
         }
 
-        public Project InsertProject(Project project)
+        public Project Create(Project project)
         {
             var entity = context.Add(project);
             context.SaveChanges();

@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class EmployeeRepository
+    public class EmployeeRepository : IEmployeeRepository
     {
         private DatabaseContext context;
 
@@ -14,25 +15,25 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<Employee> GetEmployees()
+        public IQueryable<Employee> GetAll()
         {
             return context.Employees.AsNoTracking().Include(e => e.ProjectEmployees).ThenInclude(e => e.Project);
         }
 
-        public Employee InsertEmployee(Employee employee)
+        public Employee Get(int id)
+        {
+            Employee employee = GetAll().Where(e => e.Id == id).FirstOrDefault();
+            return employee;
+        }
+
+        public Employee Create(Employee employee)
         {
             var entity = context.Add(employee);
             context.SaveChanges();
             return entity.Entity;
         }
 
-        public Employee GetEmployee(int id)
-        {
-            Employee employee = GetEmployees().Where(e => e.Id == id).FirstOrDefault();
-            return employee;
-        }
-
-        public Employee UpdateEmployee(int id, Employee employee)
+        public Employee Update(int id, Employee employee)
         {
             Employee entity = context.Employees.Find(id);
             if (entity != null)
@@ -51,7 +52,7 @@ namespace Infrastructure.Repositories
             return null;
         }
 
-        public void DeleteEmployee(int id)
+        public void Delete(int id)
         {
             Employee entity = context.Employees.Find(id);
             if (entity != null)

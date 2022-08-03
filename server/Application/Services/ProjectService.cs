@@ -1,30 +1,30 @@
-﻿namespace Application.Services
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using Application.DTO.Request;
-    using Application.Interfaces;
-    using Application.ViewModels;
-    using Domain.Models;
-    using Infrastructure.Repositories;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Application.DTO.Request;
+using Application.Interfaces;
+using Application.ViewModels;
+using Domain.Interfaces;
+using Domain.Models;
 
+namespace Application.Services
+{
     public class ProjectService: IProjectService
     {
-        private ProjectRepository _projectRepository;
+        private IProjectRepository _projectRepository;
 
-        public ProjectService(ProjectRepository projectRepository)
+        public ProjectService(IProjectRepository projectRepository)
         {
             _projectRepository = projectRepository;
         }
 
         public List<ProjectDto> GetProjects()
         {
-            return _projectRepository.GetProjects().Select(x => new ProjectDto(x, false)).ToList();
+            return _projectRepository.GetAll().Select(x => new ProjectDto(x, false)).ToList();
         }
 
         public ProjectDto GetProject(int id)
         {
-            Project result = _projectRepository.GetProject(id);
+            Project result = _projectRepository.Get(id);
             if (result == null)
             {
                 throw new KeyNotFoundException();
@@ -35,7 +35,7 @@
 
         public ProjectDto InsertProject(ProjectCreateRequestDto project)
         {
-            return new ProjectDto(_projectRepository.InsertProject(project.ToModel()));
+            return new ProjectDto(_projectRepository.Create(project.ToModel()));
         }
     }
 }
