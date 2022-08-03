@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
-    public class Project
+    public class Project : Entity
     {
-        public int Id { get; set; }
-
         public int ExternalID { get; set; }
 
         [Required]

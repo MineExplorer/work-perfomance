@@ -2,10 +2,8 @@
 
 namespace Domain.Models
 {
-    public class Task
+    public class Task : Entity
     {
-        public int Id { get; set; }
-
         public int EmployeeId { get; set; }
 
         public Employee Employee { get; set; }

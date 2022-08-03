@@ -2,10 +2,8 @@
 
 namespace Domain.Models
 {
-    public class WorkType
+    public class WorkType : Entity
     {
-        public int Id { get; set; }
-
         [Required]
         public string Name { get; set; }
     }

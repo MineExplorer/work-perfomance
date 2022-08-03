@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
-    public class TimeInterval
+    public class TimeInterval : Entity
     {
-        public int Id { get; set; }
-
         public int EmployeeId { get; set; }
 
         public Employee Employee { get; set; }

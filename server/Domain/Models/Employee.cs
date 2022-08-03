@@ -5,10 +5,8 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class Employee
+    public class Employee : Entity
     {
-        public int Id { get; set; }
-
         public int ExternalID { get; set; }
 
         [Required]
