@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220412121736_InitialMigration")]
+    [Migration("20220803090800_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,12 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Experience")
                         .HasColumnType("int");
 
+                    b.Property<int>("ExternalID")
+                        .HasColumnType("int");
+
+                    b.Property<float>("HourlyRate")
+                        .HasColumnType("real");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -55,8 +61,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Seniority")
                         .HasColumnType("int");
 
-                    b.Property<string>("TechStack")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("WorkDayDuration")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -69,6 +75,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ExternalID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -87,11 +96,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.HasKey("ProjectId", "EmployeeId");
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("ProjectEmployee");
+                    b.ToTable("ProjectEmployees");
                 });
 
             modelBuilder.Entity("Domain.Models.Task", b =>

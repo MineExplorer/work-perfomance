@@ -13,13 +13,15 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ExternalID = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     PermissionLevel = table.Column<int>(type: "int", nullable: false),
                     Seniority = table.Column<int>(type: "int", nullable: false),
                     Experience = table.Column<int>(type: "int", nullable: false),
-                    TechStack = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HourlyRate = table.Column<float>(type: "real", nullable: false),
+                    WorkDayDuration = table.Column<float>(type: "real", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -33,6 +35,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ExternalID = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -77,23 +80,24 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectEmployee",
+                name: "ProjectEmployees",
                 columns: table => new
                 {
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectEmployee", x => new { x.ProjectId, x.EmployeeId });
+                    table.PrimaryKey("PK_ProjectEmployees", x => new { x.ProjectId, x.EmployeeId });
                     table.ForeignKey(
-                        name: "FK_ProjectEmployee_Employees_EmployeeId",
+                        name: "FK_ProjectEmployees_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectEmployee_Projects_ProjectId",
+                        name: "FK_ProjectEmployees_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
@@ -146,12 +150,12 @@ namespace Infrastructure.Migrations
                     { 3, "Изучение" },
                     { 4, "Документация" },
                     { 5, "Коммуникация" },
-                    { 6, "Встреча" }
+                    { 6, "Совещание" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectEmployee_EmployeeId",
-                table: "ProjectEmployee",
+                name: "IX_ProjectEmployees_EmployeeId",
+                table: "ProjectEmployees",
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
@@ -178,7 +182,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProjectEmployee");
+                name: "ProjectEmployees");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
