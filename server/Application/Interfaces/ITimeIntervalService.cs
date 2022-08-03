@@ -11,7 +11,7 @@ namespace Application.Interfaces
         /// </summary>
         /// <param name="id">Time interval id</param>
         /// <returns>Time interval data</returns>
-        public TimeIntervalDto GetTimeInterval(int id);
+        TimeIntervalDto GetTimeInterval(int id);
 
         /// <summary>
         /// Returns all time intervals for employee
@@ -20,14 +20,14 @@ namespace Application.Interfaces
         /// <param name="rawDateStart">Date start string</param>
         /// <param name="rawDateEnd">Date end string</param>
         /// <returns>List of time intervals</returns>
-        public List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd);
+        List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd);
 
         /// <summary>
         /// Creates time interval
         /// </summary>
         /// <param name="timeInterval">Time interval data to create</param>
         /// <returns>Created time interval</returns>
-        public TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval);
+        TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval);
 
         /// <summary>
         /// Updates time interval
@@ -35,18 +35,18 @@ namespace Application.Interfaces
         /// <param name="id">Time interval id</param>
         /// <param name="timeInterval">Time interval data to update</param>
         /// <returns>Updated time interval</returns>
-        public TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval);
+        TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval);
 
         /// <summary>
         /// Deletes time interval by id
         /// </summary>
         /// <param name="id">Time interval id</param>
-        public void DeleteTimeInterval(int id);
+        void DeleteTimeInterval(int id);
 
-        public Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd);
+        Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd);
 
-        public Dictionary<int, List<float>> GetTimeStatsForPeriod(int employeeId, string rawDateStart, string rawDateEnd);
+        Dictionary<int, List<float>> GetTimeStatsForPeriod(int employeeId, string rawDateStart, string rawDateEnd);
 
-        public Dictionary<int, List<float>> GetTeamStatsForPeriod(int projectId, string rawDateStart, string rawDateEnd);
+        Dictionary<int, List<float>> GetTeamStatsForPeriod(int projectId, string rawDateStart, string rawDateEnd);
     }
 }

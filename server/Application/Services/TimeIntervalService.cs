@@ -18,7 +18,6 @@ namespace Application.Services
             _timeIntervalRepository = timeIntervalRepository;
         }
 
-        
         public TimeIntervalDto GetTimeInterval(int id)
         {
             TimeInterval result = _timeIntervalRepository.Get(id);
