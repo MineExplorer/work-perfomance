@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.DTO.Request;
-using Application.Services;
+using Application.Interfaces;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,9 +13,9 @@ namespace WebApi.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly ILogger<ProjectController> logger;
-        private ProjectService _projectService;
+        private IProjectService _projectService;
 
-        public ProjectController(ILogger<ProjectController> logger, ProjectService projectService)
+        public ProjectController(ILogger<ProjectController> logger, IProjectService projectService)
         {
             this.logger = logger;
             _projectService = projectService;

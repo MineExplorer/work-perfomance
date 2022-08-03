@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using Application.Interfaces;
 
 namespace WebApi
 {
@@ -38,14 +39,14 @@ namespace WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
 
-            services.AddScoped<EmployeeService>();
-            services.AddScoped<TimeIntervalService>();
-            services.AddScoped<ProjectService>();
-            services.AddScoped<TaskService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ITimeIntervalService, TimeIntervalService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             services.AddScoped<EmployeeRepository>();
-            services.AddScoped<TimeIntervalRepository>();
             services.AddScoped<ProjectRepository>();
+            services.AddScoped<TimeIntervalRepository>();
             services.AddScoped<TaskRepository>();
         }
 

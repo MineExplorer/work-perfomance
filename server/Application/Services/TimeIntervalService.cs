@@ -4,17 +4,30 @@
     using System.Collections.Generic;
     using System.Linq;
     using Application.DTO.Request;
+    using Application.Interfaces;
     using Application.ViewModels;
     using Domain.Models;
     using Infrastructure.Repositories;
 
-    public class TimeIntervalService
+    public class TimeIntervalService: ITimeIntervalService
     {
         private TimeIntervalRepository _timeIntervalRepository;
 
         public TimeIntervalService(TimeIntervalRepository timeIntervalRepository)
         {
             _timeIntervalRepository = timeIntervalRepository;
+        }
+
+        
+        public TimeIntervalDto GetTimeInterval(int id)
+        {
+            TimeInterval result = _timeIntervalRepository.GetTimeInterval(id);
+            if (result == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            return new TimeIntervalDto(result);
         }
 
         public List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd)
@@ -24,7 +37,28 @@
             return _timeIntervalRepository.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd).
                 Select(x => new TimeIntervalDto(x)).ToList();
         }
-        
+
+        public TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval)
+        {
+            return new TimeIntervalDto(_timeIntervalRepository.InsertTimeInterval(timeInterval.ToModel()));
+        }
+
+        public TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval)
+        {
+            TimeInterval result = _timeIntervalRepository.UpdateTimeInterval(id, timeInterval.ToModel());
+            if (result == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            return new TimeIntervalDto(result);
+        }
+
+        public void DeleteTimeInterval(int id)
+        {
+            _timeIntervalRepository.DeleteTimeInterval(id);
+        }
+
         public Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd)
         {
             DateTime dateStart = DateTime.Parse(rawDateStart);
@@ -45,7 +79,7 @@
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
             var workingTimeByProject = new Dictionary<int, List<float>>();
             var intervalsByProject = _timeIntervalRepository.GetTimeIntervalsForEmployeeProjects(employeeId, dateStart, dateEnd);
-            foreach(var pair in intervalsByProject)
+            foreach (var pair in intervalsByProject)
             {
                 if (pair.Value.Count == 0) continue;
 
@@ -66,38 +100,6 @@
             }
 
             return workingTimeByEmployee;
-        }
-
-        public TimeIntervalDto InsertTimeInterval(TimeIntervalCreateRequestDto timeInterval)
-        {
-            return new TimeIntervalDto(_timeIntervalRepository.InsertTimeInterval(timeInterval.ToModel()));
-        }
-        /*
-        public TimeIntervalDto GetTimeInterval(int id)
-        {
-            TimeInterval result = _timeIntervalRepository.GetTimeInterval(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            return new TimeIntervalDto(result);
-        }*/
-
-        public TimeIntervalDto UpdateTimeInterval(int id, TimeIntervalCreateRequestDto timeInterval)
-        {
-            TimeInterval result = _timeIntervalRepository.UpdateTimeInterval(id, timeInterval.ToModel());
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            return new TimeIntervalDto(result);
-        }
-
-        public void DeleteTimeInterval(int id)
-        {
-            _timeIntervalRepository.DeleteTimeInterval(id);
         }
 
         private List<float> CalculateSumOfIntervalsByDay(List<TimeInterval> intervals, DateTime dateStart, DateTime dateEnd)

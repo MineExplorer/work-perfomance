@@ -3,11 +3,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using Application.DTO.Request;
+    using Application.Interfaces;
     using Application.ViewModels;
     using Domain.Models;
     using Infrastructure.Repositories;
 
-    public class ProjectService
+    public class ProjectService: IProjectService
     {
         private ProjectRepository _projectRepository;
 

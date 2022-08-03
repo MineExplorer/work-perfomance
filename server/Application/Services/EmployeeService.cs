@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using Application.DTO.Request;
+    using Application.Interfaces;
     using Application.ViewModels;
     using Domain.Enums;
     using Domain.Models;
     using Infrastructure.Repositories;
 
-    public class EmployeeService
+    public class EmployeeService : IEmployeeService
     {
         private EmployeeRepository _employeeRepository;
 
@@ -23,11 +24,6 @@
             return _employeeRepository.GetEmployees().Select(x => new EmployeeDto(x, false)).ToList();
         }
 
-        public EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee)
-        {
-            return new EmployeeDto(_employeeRepository.InsertEmployee(employee.ToModel()));
-        }
-
         public EmployeeDto GetEmployee(int id)
         {
             Employee result = _employeeRepository.GetEmployee(id);
@@ -37,6 +33,11 @@
             }
 
             return new EmployeeDto(result, true);
+        }
+
+        public EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee)
+        {
+            return new EmployeeDto(_employeeRepository.InsertEmployee(employee.ToModel()));
         }
 
         public EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee)

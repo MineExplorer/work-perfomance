@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.DTO.Request;
-using Application.Services;
+using Application.Interfaces;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,9 +13,9 @@ namespace WebApi.Controllers
     public class TimeIntervalController : ControllerBase
     {
         private readonly ILogger<TimeIntervalController> logger;
-        private TimeIntervalService _timeIntervalService;
+        private ITimeIntervalService _timeIntervalService;
 
-        public TimeIntervalController(ILogger<TimeIntervalController> logger, TimeIntervalService timeIntervalService)
+        public TimeIntervalController(ILogger<TimeIntervalController> logger, ITimeIntervalService timeIntervalService)
         {
             this.logger = logger;
             _timeIntervalService = timeIntervalService;

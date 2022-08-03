@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.DTO.Request;
+using Application.Interfaces;
 using Application.Services;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,9 @@ namespace WebApi.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ILogger<TaskController> logger;
-        private TaskService _taskService;
+        private ITaskService _taskService;
 
-        public TaskController(ILogger<TaskController> logger, TaskService taskService)
+        public TaskController(ILogger<TaskController> logger, ITaskService taskService)
         {
             this.logger = logger;
             _taskService = taskService;

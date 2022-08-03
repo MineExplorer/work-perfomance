@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Application.DTO.Request;
-using Application.Services;
+using Application.Interfaces;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,9 +13,9 @@ namespace WebApi.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger<EmployeeController> logger;
-        private EmployeeService _employeeService;
+        private IEmployeeService _employeeService;
 
-        public EmployeeController(ILogger<EmployeeController> logger, EmployeeService employeeService)
+        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeService employeeService)
         {
             this.logger = logger;
             _employeeService = employeeService;
