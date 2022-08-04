@@ -35,7 +35,7 @@ namespace Domain.Interfaces
         /// <param name="id">Time interval id</param>
         Task DeleteAsync(int id);
 
-        List<TimeInterval> GetAllForEmployee(int employeeId, DateTime startDate, DateTime endDate);
+        Task<List<TimeInterval>> GetAllForEmployeeAsync(int employeeId, DateTime startDate, DateTime endDate);
 
         Dictionary<int, List<TimeInterval>> GetForEmployeeByProjects(int employeeId, DateTime startDate, DateTime endDate);
 

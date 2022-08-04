@@ -25,12 +25,12 @@ namespace Application.Services
             return new TimeIntervalDto(result);
         }
 
-        public List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd)
+        public async Task<List<TimeIntervalDto>> GetAllForEmployeeAsync(int employeeId, string rawDateStart, string rawDateEnd)
         {
             DateTime dateStart = DateTime.Parse(rawDateStart);
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
-            return _timeIntervalRepository.GetAllForEmployee(employeeId, dateStart, dateEnd).
-                Select(x => new TimeIntervalDto(x)).ToList();
+            var list = await _timeIntervalRepository.GetAllForEmployeeAsync(employeeId, dateStart, dateEnd);
+            return list.Select(x => new TimeIntervalDto(x)).ToList();
         }
 
         public async Task<TimeIntervalDto> CreateAsync(TimeIntervalCreateRequestDto timeInterval)
@@ -50,17 +50,16 @@ namespace Application.Services
             await _timeIntervalRepository.DeleteAsync(id);
         }
 
-        public Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd)
+        public async Task<Dictionary<int, float>> GetTotalTimeByWorkTypeAsync(int employeeId, string rawDateStart, string rawDateEnd)
         {
             DateTime dateStart = DateTime.Parse(rawDateStart);
             DateTime dateEnd = DateTime.Parse(rawDateEnd);
             var timeByWorkType = new Dictionary<int, float>();
-            _timeIntervalRepository.GetAllForEmployee(employeeId, dateStart, dateEnd).
-                ForEach(i =>
-                {
-                    timeByWorkType.TryGetValue(i.WorkType.Id, out float value);
-                    timeByWorkType[i.WorkType.Id] = value + i.Duration;
-                });
+            var list = await _timeIntervalRepository.GetAllForEmployeeAsync(employeeId, dateStart, dateEnd);
+            list.ForEach(i => {
+                timeByWorkType.TryGetValue(i.WorkType.Id, out float value);
+                timeByWorkType[i.WorkType.Id] = value + i.Duration;
+            });
             return timeByWorkType;
         }
 

@@ -21,7 +21,7 @@ namespace Application.Interfaces
         /// <param name="rawDateStart">Date start string</param>
         /// <param name="rawDateEnd">Date end string</param>
         /// <returns>List of time intervals</returns>
-        List<TimeIntervalDto> GetTimeIntervalsForEmployee(int employeeId, string rawDateStart, string rawDateEnd);
+        Task<List<TimeIntervalDto>> GetAllForEmployeeAsync(int employeeId, string rawDateStart, string rawDateEnd);
 
         /// <summary>
         /// Creates time interval
@@ -44,7 +44,7 @@ namespace Application.Interfaces
         /// <param name="id">Time interval id</param>
         Task DeleteAsync(int id);
 
-        Dictionary<int, float> GetTotalTimeByWorkType(int employeeId, string rawDateStart, string rawDateEnd);
+        Task<Dictionary<int, float>> GetTotalTimeByWorkTypeAsync(int employeeId, string rawDateStart, string rawDateEnd);
 
         Dictionary<int, List<float>> GetTimeStatsForPeriod(int employeeId, string rawDateStart, string rawDateEnd);
 

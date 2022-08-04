@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
             TimeInterval entity = await context.TimeIntervals.FindAsync(id);
             if (entity == null)
             {
-                throw new KeyNotFoundException($"Task with id {id} not found");
+                throw new KeyNotFoundException($"Time interval with id {id} not found");
             }
             return entity;
         }
@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories
             TimeInterval entity = await context.TimeIntervals.FindAsync(id);
             if (entity == null)
             {
-                throw new KeyNotFoundException($"Task with id {entity.Id} not found");
+                throw new KeyNotFoundException($"Time interval with id {entity.Id} not found");
             }
 
             entity.ProjectId = timeInterval.ProjectId;
@@ -62,14 +62,14 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public List<TimeInterval> GetAllForEmployee(int employeeId, DateTime startDate, DateTime endDate)
+        public async Task<List<TimeInterval>> GetAllForEmployeeAsync(int employeeId, DateTime startDate, DateTime endDate)
         {
-            return context.TimeIntervals.AsNoTracking().
+            return await context.TimeIntervals.AsNoTracking().
                 Where(e => e.EmployeeId == employeeId && e.Date >= startDate && e.Date <= endDate).
                 Include(e => e.Project).
                 Include(e => e.WorkType).
                 OrderBy(e => e.Date).
-                ToList();
+                ToListAsync();
         }
 
         public Dictionary<int, List<TimeInterval>> GetForEmployeeByProjects(int employeeId, DateTime startDate, DateTime endDate)

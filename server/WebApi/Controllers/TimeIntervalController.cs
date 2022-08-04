@@ -23,58 +23,6 @@ namespace WebApi.Controllers
             _timeIntervalService = timeIntervalService;
         }
 
-        [HttpGet]
-        public ActionResult<List<TimeIntervalDto>> GetForEmployee(int employeeId, string dateStart, string dateEnd)
-        {
-            try
-            {
-                return Ok(_timeIntervalService.GetTimeIntervalsForEmployee(employeeId, dateStart, dateEnd));
-            }
-            catch (Exception ex)
-            {
-                return InternalErrorResult(ex);
-            }
-        }
-
-        [HttpGet("worktypes")]
-        public ActionResult<Dictionary<int, float>> GetTotalTimeByWorkType(int employeeId, string dateStart, string dateEnd)
-        {
-            try
-            {
-                return Ok(_timeIntervalService.GetTotalTimeByWorkType(employeeId, dateStart, dateEnd));
-            }
-            catch (Exception ex)
-            {
-                return InternalErrorResult(ex);
-            }
-        }
-
-        [HttpGet("stats")]
-        public ActionResult<Dictionary<int, List<float>>> GetTimeStatsForPeriod(int employeeId, string dateStart, string dateEnd)
-        {
-            try
-            {
-                return Ok(_timeIntervalService.GetTimeStatsForPeriod(employeeId, dateStart, dateEnd));
-            }
-            catch (Exception ex)
-            {
-                return InternalErrorResult(ex);
-            }
-        }
-        
-        [HttpGet("teamstats")]
-        public ActionResult<Dictionary<int, List<float>>> GetTeamStatsForPeriod(int projectId, string dateStart, string dateEnd)
-        {
-            try
-            {
-                return Ok(_timeIntervalService.GetTeamStatsForPeriod(projectId, dateStart, dateEnd));
-            }
-            catch (Exception ex)
-            {
-                return InternalErrorResult(ex);
-            }
-        }
-        
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TimeIntervalDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
@@ -92,6 +40,21 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return InternalErrorResult(ex.InnerException);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<TimeIntervalDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> GetForEmployee(int employeeId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(await _timeIntervalService.GetAllForEmployeeAsync(employeeId, dateStart, dateEnd));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
             }
         }
 
@@ -131,12 +94,60 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _timeIntervalService.DeleteAsync(id);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
+
+        [HttpGet("worktypes")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dictionary<int, float>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> GetTotalTimeByWorkType(int employeeId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(await _timeIntervalService.GetTotalTimeByWorkTypeAsync(employeeId, dateStart, dateEnd));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
+        [HttpGet("stats")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dictionary<int, List<float>>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult GetTimeStatsForPeriod(int employeeId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(_timeIntervalService.GetTimeStatsForPeriod(employeeId, dateStart, dateEnd));
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
+        [HttpGet("teamstats")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Dictionary<int, List<float>>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult GetTeamStatsForPeriod(int projectId, string dateStart, string dateEnd)
+        {
+            try
+            {
+                return Ok(_timeIntervalService.GetTeamStatsForPeriod(projectId, dateStart, dateEnd));
             }
             catch (Exception ex)
             {
