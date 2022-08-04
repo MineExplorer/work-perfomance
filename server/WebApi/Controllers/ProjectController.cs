@@ -74,6 +74,26 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> Update(int id, [FromBody] ProjectCreateRequestDto project)
+        {
+            try
+            {
+                return Ok(await _projectService.UpdateAsync(id, project));
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return ProjectNotFound(ex);
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]

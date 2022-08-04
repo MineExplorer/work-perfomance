@@ -28,6 +28,14 @@ namespace Application.Interfaces
         Task<ProjectDto> CreateAsync(ProjectCreateRequestDto project);
 
         /// <summary>
+        /// Updates project/
+        /// </summary>
+        /// <param name="id">Project id</param>
+        /// <param name="project">Project data to update</param>
+        /// <returns>Updated project</returns>
+        Task<ProjectDto> UpdateAsync(int id, ProjectCreateRequestDto project);
+
+        /// <summary>
         /// Deletes project by id
         /// </summary>
         /// <param name="id">Project id</param>

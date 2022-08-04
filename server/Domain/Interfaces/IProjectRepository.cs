@@ -27,7 +27,15 @@ namespace Domain.Interfaces
         Task<Project> CreateAsync(Project project);
 
         /// <summary>
-        /// Deletes project by id
+        /// Updates project/
+        /// </summary>
+        /// <param name="id">Project id</param>
+        /// <param name="project">Project data to update</param>
+        /// <returns>Updated project</returns>
+        Task<Project> UpdateAsync(int id, Project project);
+
+        /// <summary>
+        /// Deletes project by id.
         /// </summary>
         /// <param name="id">Project id</param>
         Task DeleteAsync(int id);
