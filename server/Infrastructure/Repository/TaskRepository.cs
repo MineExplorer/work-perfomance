@@ -27,7 +27,7 @@ namespace Infrastructure.Repositories
             TaskEntity entity = context.Tasks.Find(id);
             if (entity == null)
             {
-                throw new ObjectNotFoundException($"Project with id {id} not found");
+                throw new ObjectNotFoundException($"Task with id {id} not found");
             }
             return entity;
         }
