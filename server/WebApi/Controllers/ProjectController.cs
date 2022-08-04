@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
 using Domain.Exeptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
@@ -23,7 +24,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<ProjectDto>> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProjectDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult GetAll()
         {
             try
             {
@@ -36,7 +39,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ProjectDto> Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Get(int id)
         {
             try
             {
@@ -53,7 +59,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ProjectDto> Insert([FromBody] ProjectCreateRequestDto project)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Insert([FromBody] ProjectCreateRequestDto project)
         {
             try
             {

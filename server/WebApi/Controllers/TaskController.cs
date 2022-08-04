@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.Services;
 using Application.ViewModels;
 using Domain.Exeptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
@@ -24,7 +25,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TaskDto> Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TaskDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Get(int id)
         {
             try
             {
@@ -41,7 +45,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<TimeIntervalDto>> GetForEmployee(int employeeId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<TaskDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult GetForEmployee(int employeeId)
         {
             try
             {
@@ -54,7 +60,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TaskDto> Insert([FromBody] TaskCreateRequestDto task)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TaskDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Insert([FromBody] TaskCreateRequestDto task)
         {
             try
             {

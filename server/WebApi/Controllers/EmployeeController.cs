@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
@@ -23,7 +24,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<EmployeeDto>> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmployeeDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult GetAll()
         {
             try
             {
@@ -36,7 +39,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<EmployeeDto> Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Get(int id)
         {
             try
             {
@@ -53,7 +59,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<EmployeeDto> Insert([FromBody] EmployeeCreateRequestDto employee)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Insert([FromBody] EmployeeCreateRequestDto employee)
         {
             try
             {
@@ -66,7 +74,10 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<EmployeeDto> Update(int id, [FromBody] EmployeeCreateRequestDto employee)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public IActionResult Update(int id, [FromBody] EmployeeCreateRequestDto employee)
         {
             try
             {
@@ -83,6 +94,8 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
         public IActionResult Delete(int id)
         {
             try
