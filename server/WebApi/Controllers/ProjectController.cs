@@ -7,6 +7,7 @@ using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
 using Domain.Exeptions;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -26,11 +27,11 @@ namespace WebApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProjectDto>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(_projectService.GetProjects());
+                return Ok(await _projectService.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -42,11 +43,11 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return Ok(_projectService.GetProject(id));
+                return Ok(await _projectService.GetAsync(id));
             }
             catch (ObjectNotFoundException ex)
             {
@@ -61,11 +62,11 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Insert([FromBody] ProjectCreateRequestDto project)
+        public async Task<IActionResult> Create([FromBody] ProjectCreateRequestDto project)
         {
             try
             {
-                return Ok(_projectService.InsertProject(project));
+                return Ok(await _projectService.CreateAsync(project));
             }
             catch (Exception ex)
             {

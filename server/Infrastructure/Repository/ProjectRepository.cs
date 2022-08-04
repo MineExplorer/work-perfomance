@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Domain.Exeptions;
 using Domain.Interfaces;
 using Domain.Models;
@@ -16,26 +18,22 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<Project> GetAll()
+        public async Task<List<Project>> GetAllAsync()
         {
-            return context.Projects.AsNoTracking().Include(e => e.ProjectEmployees).ThenInclude(e => e.Employee);
+            return await context.Projects.ToListAsync();
         }
 
-        public Project Get(int id)
+        public async Task<Project> GetAsync(int id)
         {
-            Project entity = GetAll().Where(p => p.Id == id).FirstOrDefault();
-            if (entity == null)
-            {
-                throw new ObjectNotFoundException($"Project with id {id} not found");
-            }
-            return entity;
+            return await context.Projects.Include(e => e.ProjectEmployees).ThenInclude(e => e.Employee).
+                Where(p => p.Id == id).FirstOrDefaultAsync();
         }
 
-        public Project Create(Project project)
+        public async Task<Project> CreateAsync(Project project)
         {
-            var entity = context.Add(project);
-            context.SaveChanges();
-            return entity.Entity;
+            context.Add(project);
+            await context.SaveChangesAsync();
+            return project;
         }
     }
 }

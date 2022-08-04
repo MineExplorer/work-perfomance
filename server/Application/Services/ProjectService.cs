@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
+using Domain.Exeptions;
 using Domain.Interfaces;
-using Domain.Models;
 
 namespace Application.Services
 {
@@ -17,20 +18,26 @@ namespace Application.Services
             _projectRepository = projectRepository;
         }
 
-        public List<ProjectDto> GetProjects()
+        public async Task<List<ProjectDto>> GetAllAsync()
         {
-            return _projectRepository.GetAll().Select(x => new ProjectDto(x, false)).ToList();
+            var list = await _projectRepository.GetAllAsync();
+            return list.Select(x => new ProjectDto(x, false)).ToList();
         }
 
-        public ProjectDto GetProject(int id)
+        public async Task<ProjectDto> GetAsync(int id)
         {
-            Project result = _projectRepository.Get(id);
-            return new ProjectDto(result, true);
+            var entity = await _projectRepository.GetAsync(id);
+            if (entity == null)
+            {
+                throw new ObjectNotFoundException($"Project with id {id} not found");
+            }
+            return new ProjectDto(entity, true);
         }
 
-        public ProjectDto InsertProject(ProjectCreateRequestDto project)
+        public async Task<ProjectDto> CreateAsync(ProjectCreateRequestDto project)
         {
-            return new ProjectDto(_projectRepository.Create(project.ToModel()));
+            var entity = await _projectRepository.CreateAsync(project.ToModel());
+            return new ProjectDto(entity);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.DTO.Request;
 using Application.ViewModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
@@ -10,20 +11,20 @@ namespace Application.Interfaces
         /// Returns all projects.
         /// </summary>
         /// <returns>List of projects</returns>
-        List<ProjectDto> GetProjects();
+        Task<List<ProjectDto>> GetAllAsync();
 
         /// <summary>
         /// Returns project by id.
         /// </summary>
         /// <param name="id">Project id</param>
         /// <returns>Project data</returns>
-        ProjectDto GetProject(int id);
+        Task<ProjectDto> GetAsync(int id);
 
         /// <summary>
         /// Creates project.
         /// </summary>
         /// <param name="project">Project data</param>
         /// <returns>Created project</returns>
-        ProjectDto InsertProject(ProjectCreateRequestDto project);
+        Task<ProjectDto> CreateAsync(ProjectCreateRequestDto project);
     }
 }
