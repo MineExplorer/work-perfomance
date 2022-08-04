@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Domain.Models;
+using Domain.Exeptions;
 using Infrastructure.EF;
 
 namespace Infrastructure.Repositories
@@ -23,7 +24,7 @@ namespace Infrastructure.Repositories
             TimeInterval entity = await context.TimeIntervals.FindAsync(id);
             if (entity == null)
             {
-                throw new KeyNotFoundException($"Time interval with id {id} not found");
+                throw new ObjectNotFoundException($"Time interval with id {id} not found");
             }
             return entity;
         }
@@ -40,7 +41,7 @@ namespace Infrastructure.Repositories
             TimeInterval entity = await context.TimeIntervals.FindAsync(id);
             if (entity == null)
             {
-                throw new KeyNotFoundException($"Time interval with id {entity.Id} not found");
+                throw new ObjectNotFoundException($"Time interval with id {entity.Id} not found");
             }
 
             entity.ProjectId = timeInterval.ProjectId;

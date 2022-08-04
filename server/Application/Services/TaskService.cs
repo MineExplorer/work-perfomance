@@ -20,10 +20,6 @@ namespace Application.Services
         public TaskDto GetTask(int id)
         {
             TaskEntity result = _employeeTaskRepository.Get(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
             return new TaskDto(result);
         }
 

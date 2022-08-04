@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
+using Domain.Exeptions;
 
 namespace WebApi.Controllers
 {
@@ -33,9 +34,9 @@ namespace WebApi.Controllers
             {
                 return Ok(await _timeIntervalService.GetAsync(id));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return TimeIntervalNotFound(id);
+                return TimeIntervalNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -83,9 +84,9 @@ namespace WebApi.Controllers
             {
                 return Ok(await _timeIntervalService.UpdateAsync(id, timeInterval));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return TimeIntervalNotFound(id);
+                return TimeIntervalNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -155,12 +156,12 @@ namespace WebApi.Controllers
             }
         }
 
-        private ActionResult TimeIntervalNotFound(int id)
+        private ActionResult TimeIntervalNotFound(ObjectNotFoundException ex)
         {
             var error = new ErrorDto
             {
                 Code = "NotFound",
-                Message = $"TimeInterval with id {id} not found",
+                Message = ex.Message,
                 Target = "TimeIntervalId",
             };
 

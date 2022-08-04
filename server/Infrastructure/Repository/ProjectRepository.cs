@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Domain.Exeptions;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.EF;
@@ -22,7 +23,12 @@ namespace Infrastructure.Repositories
 
         public Project Get(int id)
         {
-            return GetAll().Where(p => p.Id == id).FirstOrDefault();
+            Project entity = GetAll().Where(p => p.Id == id).FirstOrDefault();
+            if (entity == null)
+            {
+                throw new ObjectNotFoundException($"Project with id {id} not found");
+            }
+            return entity;
         }
 
         public Project Create(Project project)

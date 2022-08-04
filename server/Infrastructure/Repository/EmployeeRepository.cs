@@ -1,8 +1,9 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Domain.Models;
+using Domain.Exeptions;
 using Infrastructure.EF;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -23,6 +24,10 @@ namespace Infrastructure.Repositories
         public Employee Get(int id)
         {
             Employee employee = GetAll().Where(e => e.Id == id).FirstOrDefault();
+            if (employee == null)
+            {
+                throw new ObjectNotFoundException($"Employee with id {id} not found");
+            }
             return employee;
         }
 
@@ -36,20 +41,22 @@ namespace Infrastructure.Repositories
         public Employee Update(int id, Employee employee)
         {
             Employee entity = context.Employees.Find(id);
-            if (entity != null)
+            if (entity == null)
             {
-                entity.Email = employee.Email;
-                entity.Name = employee.Name;
-                entity.Password = employee.Password;
-                entity.Seniority = employee.Seniority;
-                entity.Experience = employee.Experience;
-                entity.HourlyRate = employee.HourlyRate;
-                entity.PermissionLevel = employee.PermissionLevel;
-                context.SaveChanges();
-                return entity;
+                throw new ObjectNotFoundException($"Employee with id {id} not found");
             }
 
-            return null;
+            entity.Email = employee.Email;
+            entity.Name = employee.Name;
+            entity.Password = employee.Password;
+            entity.Seniority = employee.Seniority;
+            entity.Experience = employee.Experience;
+            entity.HourlyRate = employee.HourlyRate;
+            entity.PermissionLevel = employee.PermissionLevel;
+            context.Update(entity);
+            context.SaveChanges();
+
+            return entity;
         }
 
         public void Delete(int id)

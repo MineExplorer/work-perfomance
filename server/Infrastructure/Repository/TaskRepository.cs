@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Domain.Exeptions;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.EF;
@@ -23,13 +24,17 @@ namespace Infrastructure.Repositories
 
         public TaskEntity Get(int id)
         {
-            return context.Tasks.Find(id);
+            TaskEntity entity = context.Tasks.Find(id);
+            if (entity == null)
+            {
+                throw new ObjectNotFoundException($"Project with id {id} not found");
+            }
+            return entity;
         }
         
         public List<TaskEntity> GetAllForEmployee(int employeeId)
         {
-            List<TaskEntity> feedbackList = GetAll().Where(e => e.EmployeeId == employeeId).ToList();
-            return feedbackList;
+            return GetAll().Where(e => e.EmployeeId == employeeId).ToList();
         }
 
         public TaskEntity Create(TaskEntity task)

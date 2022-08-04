@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Domain.Exeptions;
 
 namespace WebApi.Controllers
 {
@@ -41,9 +42,9 @@ namespace WebApi.Controllers
             {
                 return Ok(_employeeService.GetEmployee(id));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return EmployeeNotFound(id);
+                return EmployeeNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -71,9 +72,9 @@ namespace WebApi.Controllers
             {
                 return Ok(_employeeService.UpdateEmployee(id, employee));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return EmployeeNotFound(id);
+                return EmployeeNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -95,15 +96,13 @@ namespace WebApi.Controllers
             }
         }
 
-        private ActionResult EmployeeNotFound(int id)
+        private ActionResult EmployeeNotFound(ObjectNotFoundException ex)
         {
-            var error = new ErrorDto
-            {
+            var error = new ErrorDto {
                 Code = "NotFound",
-                Message = $"Employee with id {id} not found",
-                Target = "EmployeeId",
+                Message = ex.Message,
+                Target = "EmployeeId"
             };
-
             return NotFound(error);
         }
 

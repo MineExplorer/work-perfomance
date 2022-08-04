@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
+using Domain.Exeptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -41,9 +42,9 @@ namespace WebApi.Controllers
             {
                 return Ok(_projectService.GetProject(id));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return ProjectNotFound(id);
+                return ProjectNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -64,12 +65,12 @@ namespace WebApi.Controllers
             }
         }
 
-        private ActionResult ProjectNotFound(int id)
+        private ActionResult ProjectNotFound(ObjectNotFoundException ex)
         {
             var error = new ErrorDto
             {
                 Code = "NotFound",
-                Message = $"Project with id {id} not found",
+                Message = ex.Message,
                 Target = "ProjectId",
             };
 

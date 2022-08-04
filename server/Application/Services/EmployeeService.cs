@@ -25,11 +25,6 @@ namespace Application.Services
         public EmployeeDto GetEmployee(int id)
         {
             Employee result = _employeeRepository.Get(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
             return new EmployeeDto(result, true);
         }
 
@@ -41,11 +36,6 @@ namespace Application.Services
         public EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee)
         {
             Employee result = _employeeRepository.Update(id, employee.ToModel());
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
             return new EmployeeDto(result);
         }
 

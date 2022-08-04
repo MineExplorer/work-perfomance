@@ -4,6 +4,7 @@ using Application.DTO.Request;
 using Application.Interfaces;
 using Application.Services;
 using Application.ViewModels;
+using Domain.Exeptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -29,9 +30,9 @@ namespace WebApi.Controllers
             {
                 return Ok(_taskService.GetTask(id));
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return TaskNotFound(id);
+                return TaskNotFound(ex);
             }
             catch (Exception ex)
             {
@@ -65,12 +66,12 @@ namespace WebApi.Controllers
             }
         }
 
-        private ActionResult TaskNotFound(int id)
+        private ActionResult TaskNotFound(ObjectNotFoundException ex)
         {
             var error = new ErrorDto
             {
                 Code = "NotFound",
-                Message = $"Task with id {id} not found",
+                Message = ex.Message,
                 Target = "TaskId",
             };
 

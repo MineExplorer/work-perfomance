@@ -25,11 +25,6 @@ namespace Application.Services
         public ProjectDto GetProject(int id)
         {
             Project result = _projectRepository.Get(id);
-            if (result == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
             return new ProjectDto(result, true);
         }
 
