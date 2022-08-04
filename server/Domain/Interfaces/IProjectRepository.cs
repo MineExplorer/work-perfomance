@@ -25,5 +25,11 @@ namespace Domain.Interfaces
         /// <param name="project">Project data</param>
         /// <returns>Created project</returns>
         Task<Project> CreateAsync(Project project);
+
+        /// <summary>
+        /// Deletes project by id
+        /// </summary>
+        /// <param name="id">Project id</param>
+        Task DeleteAsync(int id);
     }
 }

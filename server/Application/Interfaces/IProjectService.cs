@@ -26,5 +26,11 @@ namespace Application.Interfaces
         /// <param name="project">Project data</param>
         /// <returns>Created project</returns>
         Task<ProjectDto> CreateAsync(ProjectCreateRequestDto project);
+
+        /// <summary>
+        /// Deletes project by id
+        /// </summary>
+        /// <param name="id">Project id</param>
+        Task DeleteAsync(int id);
     }
 }

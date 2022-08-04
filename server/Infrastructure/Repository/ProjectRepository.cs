@@ -35,5 +35,15 @@ namespace Infrastructure.Repositories
             await context.SaveChangesAsync();
             return project;
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            Project entity = await context.Projects.FindAsync(id);
+            if (entity != null)
+            {
+                context.Remove(entity);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

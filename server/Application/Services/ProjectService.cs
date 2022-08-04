@@ -39,5 +39,10 @@ namespace Application.Services
             var entity = await _projectRepository.CreateAsync(project.ToModel());
             return new ProjectDto(entity);
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _projectRepository.DeleteAsync(id);
+        }
     }
 }

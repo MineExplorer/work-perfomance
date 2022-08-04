@@ -74,6 +74,22 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _projectService.DeleteAsync(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalErrorResult(ex);
+            }
+        }
+
         private ActionResult ProjectNotFound(ObjectNotFoundException ex)
         {
             var error = new ErrorDto
