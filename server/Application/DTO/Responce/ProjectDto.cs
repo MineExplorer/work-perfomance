@@ -9,6 +9,7 @@ namespace Application.ViewModels
         {
             Id = project.Id;
             Title = project.Title;
+            Archived = project.Archived;
             if (serializeEmployees && project.ProjectEmployees != null)
             {
                 Employees = project.ProjectEmployees.Select(e => new EmployeeDto(e.Employee, false)).ToArray();
@@ -22,6 +23,8 @@ namespace Application.ViewModels
         public int Id { get; set; }
 
         public string Title { get; set; }
+
+        public bool Archived { get; set; }
 
         public EmployeeDto[] Employees { get; set; }
     }

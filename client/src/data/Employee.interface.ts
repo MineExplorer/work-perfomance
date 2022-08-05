@@ -28,6 +28,7 @@ export interface Employee {
 export interface Project {
     id: number;
     title: string;
+    archived: boolean;
     employees?: Employee[];
 }
 

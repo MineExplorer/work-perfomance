@@ -46,9 +46,9 @@ namespace Application.Services
             return new ProjectDto(entity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task ArchivateAsync(int id)
         {
-            await _projectRepository.DeleteAsync(id);
+            await _projectRepository.ArchivateAsync(id);
         }
     }
 }

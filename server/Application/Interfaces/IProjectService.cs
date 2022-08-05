@@ -36,9 +36,9 @@ namespace Application.Interfaces
         Task<ProjectDto> UpdateAsync(int id, ProjectCreateRequestDto project);
 
         /// <summary>
-        /// Deletes project by id
+        /// Archivates project by id
         /// </summary>
         /// <param name="id">Project id</param>
-        Task DeleteAsync(int id);
+        Task ArchivateAsync(int id);
     }
 }

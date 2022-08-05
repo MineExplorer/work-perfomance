@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Project>> GetAllAsync()
         {
-            return await context.Projects.ToListAsync();
+            return await context.Projects.Where(p => !p.Archived).ToListAsync();
         }
 
         public async Task<Project> GetAsync(int id)
@@ -49,12 +49,13 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task ArchivateAsync(int id)
         {
             Project entity = await context.Projects.FindAsync(id);
             if (entity != null)
             {
-                context.Remove(entity);
+                entity.Archived = true;
+                context.Update(entity);
                 await context.SaveChangesAsync();
             }
         }

@@ -11,6 +11,8 @@ namespace Domain.Models
         [Required]
         public string Title { get; set; }
 
+        public bool Archived { get; set; }
+
         public IList<ProjectEmployee> ProjectEmployees { get; set; }
     }
 }

@@ -35,9 +35,9 @@ namespace Domain.Interfaces
         Task<Project> UpdateAsync(int id, Project project);
 
         /// <summary>
-        /// Deletes project by id.
+        /// Archivates project by id.
         /// </summary>
         /// <param name="id">Project id</param>
-        Task DeleteAsync(int id);
+        Task ArchivateAsync(int id);
     }
 }

@@ -94,14 +94,14 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProjectDto))]
+        [HttpPut("{id}/archive")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Archivate(int id)
         {
             try
             {
-                await _projectService.DeleteAsync(id);
+                await _projectService.ArchivateAsync(id);
                 return Ok();
             }
             catch (Exception ex)
