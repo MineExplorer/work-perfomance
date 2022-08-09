@@ -20,6 +20,8 @@ namespace Application.DTO.Request
 
         public float HourlyRate { get; set; }
 
+        public float WorkDayDuration { get; set; } = 8;
+
         public Employee ToModel()
         {
             return new Employee()
@@ -30,7 +32,8 @@ namespace Application.DTO.Request
                 Seniority = (Seniority) this.Seniority,
                 Experience = this.Experience,
                 HourlyRate = this.HourlyRate,
-                PermissionLevel = (PermissionLevel) this.PermissionLevel
+                PermissionLevel = (PermissionLevel) this.PermissionLevel,
+                WorkDayDuration = this.WorkDayDuration
             };
             
         }

@@ -21,7 +21,7 @@ namespace Application.Services
         public async Task<List<ProjectDto>> GetAllAsync()
         {
             var list = await _projectRepository.GetAllAsync();
-            return list.Select(x => new ProjectDto(x, false)).ToList();
+            return list.Select(e => new ProjectDto(e)).ToList();
         }
 
         public async Task<ProjectDto> GetAsync(int id)
@@ -31,7 +31,7 @@ namespace Application.Services
             {
                 throw new ObjectNotFoundException($"Project with id {id} not found");
             }
-            return new ProjectDto(entity, true);
+            return new ProjectDto(entity).MapEmployees(entity.ProjectEmployees);
         }
 
         public async Task<ProjectDto> CreateAsync(ProjectCreateRequestDto project)

@@ -51,6 +51,7 @@ namespace Infrastructure.Repositories
             entity.Experience = employee.Experience;
             entity.HourlyRate = employee.HourlyRate;
             entity.PermissionLevel = employee.PermissionLevel;
+            entity.WorkDayDuration = employee.WorkDayDuration;
             context.Update(entity);
             await context.SaveChangesAsync();
 

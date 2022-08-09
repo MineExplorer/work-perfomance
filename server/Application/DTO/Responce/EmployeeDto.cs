@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Models;
 
@@ -6,7 +7,7 @@ namespace Application.ViewModels
 {
     public class EmployeeDto
     {
-        public EmployeeDto(Employee employee, bool serializeProjects = false)
+        public EmployeeDto(Employee employee)
         {
             Id = employee.Id;
             Email = employee.Email;
@@ -18,10 +19,6 @@ namespace Application.ViewModels
             PermissionLevel = (int)employee.PermissionLevel;
             WorkDayDuration = employee.WorkDayDuration;
             Created = employee.Created;
-            if (serializeProjects && employee.ProjectEmployees != null)
-            {
-                Projects = employee.ProjectEmployees.Select(e => new ProjectDto(e.Project, false)).ToArray();
-            }
         }
 
         public EmployeeDto()
@@ -49,5 +46,18 @@ namespace Application.ViewModels
         public DateTime Created { get; set; }
 
         public ProjectDto[] Projects { get; set; }
+
+        public EmployeeDto MapProjects(IList<ProjectEmployee> projects)
+        {
+            if (projects == null)
+            {
+                Projects = Array.Empty<ProjectDto>();
+            }
+            else
+            {
+                Projects = projects.Select(e => new ProjectDto(e.Project)).ToArray();
+            }
+            return this;
+        }
     }
 }

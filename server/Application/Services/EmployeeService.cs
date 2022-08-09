@@ -22,29 +22,29 @@ namespace Application.Services
         public async Task<List<EmployeeDto>> GetAllAsync()
         {
             var list = await _employeeRepository.GetAllAsync();
-            return list.Select(x => new EmployeeDto(x, false)).ToList();
+            return list.Select(e => new EmployeeDto(e)).ToList();
         }
 
         public async Task<EmployeeDto> GetAsync(int id)
         {
-            Employee result = await _employeeRepository.GetAsync(id);
-            if (result == null)
+            var entity = await _employeeRepository.GetAsync(id);
+            if (entity == null)
             {
                 throw new ObjectNotFoundException($"Employee with id {id} not found");
             }
-            return new EmployeeDto(result, true);
+            return new EmployeeDto(entity).MapProjects(entity.ProjectEmployees);
         }
 
         public async Task<EmployeeDto> CreateAsync(EmployeeCreateRequestDto employee)
         {
-            Employee result = await _employeeRepository.CreateAsync(employee.ToModel());
-            return new EmployeeDto(result);
+            var entity = await _employeeRepository.CreateAsync(employee.ToModel());
+            return new EmployeeDto(entity);
         }
 
         public async Task<EmployeeDto> UpdateAsync(int id, EmployeeCreateRequestDto employee)
         {
-            Employee result = await _employeeRepository.UpdateAsync(id, employee.ToModel());
-            return new EmployeeDto(result);
+            var entity = await _employeeRepository.UpdateAsync(id, employee.ToModel());
+            return new EmployeeDto(entity);
         }
 
         public async Task DeleteAsync(int id)
