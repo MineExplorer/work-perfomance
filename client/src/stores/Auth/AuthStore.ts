@@ -4,7 +4,7 @@ import { fetchFunctionApi } from '../../helpers';
 
 export class AuthStore {
 	@observable
-  	public state: 'loading' | 'loaded' | 'error' = 'loading';
+  public state: 'loading' | 'loaded' | 'error' = 'loading';
 
 	@observable
 	public isUserAuthenticated = false;

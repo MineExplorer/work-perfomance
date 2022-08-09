@@ -60,12 +60,12 @@ export default function TeamTimeChart(props: {project: Project, dateStart: Date,
         const index = renderLines.length;
         const color = lineColors[index];
         const lineName = employee.fullName;
-        renderLines.push(<Line type="monotone" name={lineName} dataKey={employee.id} stroke={color} />);
+        renderLines.push(<Line type="monotone" key={employee.id} name={lineName} dataKey={employee.id} stroke={color} />);
         
         const totalTime = timeData[employee.id]?.reduce((sum, value) => sum += value);
         totalTimeSum += totalTime;
         
-        renderText.push(<p style={{color: color}}>{lineName}: {totalTime} часов</p>);
+        renderText.push(<p key={employee.id} style={{color: color}}>{lineName}: {totalTime} часов</p>);
     }
 
     return (

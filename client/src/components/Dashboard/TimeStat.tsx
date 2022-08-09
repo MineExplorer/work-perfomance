@@ -90,7 +90,7 @@ function TimeStat(props: {employeeId: number}) {
 
   for (let key in totalTime) {
     timeText.push(
-      <p style={{color: fillColors[index++ % fillColors.length]}}>
+      <p key={key} style={{color: fillColors[index++ % fillColors.length]}}>
         {`${workTypes[key]}: ${totalTime[key]} ч`}
       </p>
     );
