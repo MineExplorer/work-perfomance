@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.DTO.Request;
 using Application.ViewModels;
 
@@ -10,21 +11,21 @@ namespace Application.Interfaces
         /// Returns all employees.
         /// </summary>
         /// <returns>List of employees</returns>
-        List<EmployeeDto> GetEmployees();
+        Task<List<EmployeeDto>> GetAllAsync();
 
         /// <summary>
         /// Returns employee by id.
         /// </summary>
         /// <param name="id">Employee id</param>
         /// <returns>Employee data</returns>
-        EmployeeDto GetEmployee(int id);
+        Task<EmployeeDto> GetAsync(int id);
 
         /// <summary>
         /// Creates employee.
         /// </summary>
         /// <param name="employee">Employee data to create</param>
         /// <returns>Created employee</returns>
-        EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee);
+        Task<EmployeeDto> CreateAsync(EmployeeCreateRequestDto employee);
 
         /// <summary>
         /// Updates employee.
@@ -32,12 +33,12 @@ namespace Application.Interfaces
         /// <param name="id">employee id</param>
         /// <param name="employee">Employee data to update</param>
         /// <returns>Updated employee</returns>
-        EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee);
+        Task<EmployeeDto> UpdateAsync(int id, EmployeeCreateRequestDto employee);
 
         /// <summary>
         /// Deletes employee by id.
         /// </summary>
         /// <param name="id">Employee id</param>
-        void DeleteEmployee(int id);
+        Task DeleteAsync(int id);
     }
 }

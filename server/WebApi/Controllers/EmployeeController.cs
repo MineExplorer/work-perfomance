@@ -7,6 +7,7 @@ using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
 using Domain.Exeptions;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -26,11 +27,11 @@ namespace WebApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<EmployeeDto>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(_employeeService.GetEmployees());
+                return Ok(await _employeeService.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -42,11 +43,11 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return Ok(_employeeService.GetEmployee(id));
+                return Ok(await _employeeService.GetAsync(id));
             }
             catch (ObjectNotFoundException ex)
             {
@@ -61,11 +62,11 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Insert([FromBody] EmployeeCreateRequestDto employee)
+        public async Task<IActionResult> Create([FromBody] EmployeeCreateRequestDto employee)
         {
             try
             {
-                return Ok(_employeeService.InsertEmployee(employee));
+                return Ok(await _employeeService.CreateAsync(employee));
             }
             catch (Exception ex)
             {
@@ -77,11 +78,11 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Update(int id, [FromBody] EmployeeCreateRequestDto employee)
+        public async Task<IActionResult> Update(int id, [FromBody] EmployeeCreateRequestDto employee)
         {
             try
             {
-                return Ok(_employeeService.UpdateEmployee(id, employee));
+                return Ok(await _employeeService.UpdateAsync(id, employee));
             }
             catch (ObjectNotFoundException ex)
             {
@@ -96,11 +97,11 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDto))]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _employeeService.DeleteEmployee(id);
+                await _employeeService.DeleteAsync(id);
                 return Ok();
             }
             catch (Exception ex)

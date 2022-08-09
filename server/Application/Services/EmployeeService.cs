@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Application.DTO.Request;
 using Application.Interfaces;
 using Application.ViewModels;
+using Domain.Exeptions;
 using Domain.Interfaces;
 using Domain.Models;
 
@@ -17,31 +19,37 @@ namespace Application.Services
             _employeeRepository = employeeRepository;
         }
 
-        public List<EmployeeDto> GetEmployees()
+        public async Task<List<EmployeeDto>> GetAllAsync()
         {
-            return _employeeRepository.GetAll().Select(x => new EmployeeDto(x, false)).ToList();
+            var list = await _employeeRepository.GetAllAsync();
+            return list.Select(x => new EmployeeDto(x, false)).ToList();
         }
 
-        public EmployeeDto GetEmployee(int id)
+        public async Task<EmployeeDto> GetAsync(int id)
         {
-            Employee result = _employeeRepository.Get(id);
+            Employee result = await _employeeRepository.GetAsync(id);
+            if (result == null)
+            {
+                throw new ObjectNotFoundException($"Employee with id {id} not found");
+            }
             return new EmployeeDto(result, true);
         }
 
-        public EmployeeDto InsertEmployee(EmployeeCreateRequestDto employee)
+        public async Task<EmployeeDto> CreateAsync(EmployeeCreateRequestDto employee)
         {
-            return new EmployeeDto(_employeeRepository.Create(employee.ToModel()));
-        }
-
-        public EmployeeDto UpdateEmployee(int id, EmployeeCreateRequestDto employee)
-        {
-            Employee result = _employeeRepository.Update(id, employee.ToModel());
+            Employee result = await _employeeRepository.CreateAsync(employee.ToModel());
             return new EmployeeDto(result);
         }
 
-        public void DeleteEmployee(int id)
+        public async Task<EmployeeDto> UpdateAsync(int id, EmployeeCreateRequestDto employee)
         {
-            _employeeRepository.Delete(id);
+            Employee result = await _employeeRepository.UpdateAsync(id, employee.ToModel());
+            return new EmployeeDto(result);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _employeeRepository.DeleteAsync(id);
         }
     }
 }

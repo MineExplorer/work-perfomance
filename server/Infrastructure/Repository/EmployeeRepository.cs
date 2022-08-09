@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Domain.Models;
@@ -16,31 +18,27 @@ namespace Infrastructure.Repositories
             this.context = context;
         }
 
-        public IQueryable<Employee> GetAll()
+        public async Task<List<Employee>> GetAllAsync()
         {
-            return context.Employees.AsNoTracking().Include(e => e.ProjectEmployees).ThenInclude(e => e.Project);
+            return await context.Employees.ToListAsync();
         }
 
-        public Employee Get(int id)
+        public async Task<Employee> GetAsync(int id)
         {
-            Employee employee = GetAll().Where(e => e.Id == id).FirstOrDefault();
-            if (employee == null)
-            {
-                throw new ObjectNotFoundException($"Employee with id {id} not found");
-            }
+            return await context.Employees.Include(e => e.ProjectEmployees).ThenInclude(e => e.Project).
+                Where(e => e.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Employee> CreateAsync(Employee employee)
+        {
+            await context.AddAsync(employee);
+            await context.SaveChangesAsync();
             return employee;
         }
 
-        public Employee Create(Employee employee)
+        public async Task<Employee> UpdateAsync(int id, Employee employee)
         {
-            var entity = context.Add(employee);
-            context.SaveChanges();
-            return entity.Entity;
-        }
-
-        public Employee Update(int id, Employee employee)
-        {
-            Employee entity = context.Employees.Find(id);
+            Employee entity = await context.Employees.FindAsync(id);
             if (entity == null)
             {
                 throw new ObjectNotFoundException($"Employee with id {id} not found");
@@ -54,18 +52,18 @@ namespace Infrastructure.Repositories
             entity.HourlyRate = employee.HourlyRate;
             entity.PermissionLevel = employee.PermissionLevel;
             context.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return entity;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Employee entity = context.Employees.Find(id);
+            Employee entity = await context.Employees.FindAsync(id);
             if (entity != null)
             {
                 context.Remove(entity);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
     }
