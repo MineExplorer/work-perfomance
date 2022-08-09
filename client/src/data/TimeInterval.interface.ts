@@ -1,5 +1,5 @@
 export interface TimeInterval {
-  id: number;
+  id?: number;
   employeeId: number;
   projectId: number;
   project: string;

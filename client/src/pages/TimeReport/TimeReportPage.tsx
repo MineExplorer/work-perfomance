@@ -10,6 +10,7 @@ import { AuthContext } from '../../stores/Auth';
 import DateIntervalHeader from '../../components/DateIntervalHeader';
 import { DateIntervalContext, DateIntervalStore } from '../../stores/DateIntervalStore';
 import TimeTable from '../../components/TimeTable';
+import { TimeTableContext, TimeTableStore } from '../../stores/TimeTableStore';
 
 export default function TimeReportPage() {
 	const authStore = useContext(AuthContext)
@@ -19,11 +20,13 @@ export default function TimeReportPage() {
 	const [state, setState] = useState(State.Loading);
 
 	const intervalStore = useLocalObservable(() => new DateIntervalStore());
+	const timeTableStore = useLocalObservable(() => new TimeTableStore());
 
 	useEffect(() => {
 		loadData()
 		.then((result) => {
 			setEmployeeData(result);
+      timeTableStore.setEmployee(result);
 			setState(State.Loaded);
 		})
 		.catch(error => {
@@ -40,19 +43,21 @@ export default function TimeReportPage() {
 			<div>
 				<Header/>
 				<DateIntervalContext.Provider value={intervalStore}>
-					<div className="mainbox">
-						<h3>Время работы сотрудника {employeeData.fullName}</h3>
-						<div>
-							<div style={{position: "relative"}}>
-								<DateIntervalHeader>
-									<Button onClick={() => void 0}>
-										<AddIcon/>
-									</Button>
-								</DateIntervalHeader>
-								<TimeTable employee={employeeData}/>
-							</div>
-						</div>
-					</div>
+          <TimeTableContext.Provider value={timeTableStore}>
+            <div className="mainbox">
+              <h3>Время работы сотрудника {employeeData.fullName}</h3>
+              <div>
+                <div style={{position: "relative"}}>
+                  <DateIntervalHeader>
+                    <Button onClick={() => timeTableStore.addRow()}>
+                      <AddIcon/>
+                    </Button>
+                  </DateIntervalHeader>
+                  <TimeTable employee={employeeData}/>
+                </div>
+              </div>
+            </div>
+          </TimeTableContext.Provider>
 				</DateIntervalContext.Provider>
 			</div>
 		);

@@ -28,7 +28,6 @@ export class AuthStore {
 			this.userData = await fetchFunctionApi<Employee>(`/Employee/${employeeId}`);
 		} catch (error) {
 			this.state = 'error';
-			console.log(this.state);
 			return;
 		}
 
@@ -40,6 +39,5 @@ export class AuthStore {
 		this.isUserAuthenticated = true;
 		this.isUserAuthorized = true;
 		this.state = 'loaded';
-		console.log(this.state);
 	}
 }

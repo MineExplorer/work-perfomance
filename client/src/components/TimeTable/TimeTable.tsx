@@ -9,103 +9,37 @@ import SaveIcon from '@mui/icons-material/Save';
 
 import Typography from '@mui/material/Typography';
 import { Employee, State, TimeInterval } from '../../data';
-import { fetchFunctionApi, deleteFunctionApi } from '../../helpers';
 import { DateIntervalContext } from '../../stores/DateIntervalStore';
 import { DateRange, SelectProject, SelectTime, SelectWorkType } from '../Select';
+import { TimeTableContext } from '../../stores/TimeTableStore';
 
 function TimeTable(props: {employee: Employee}) {
-  const store = useContext(DateIntervalContext);
-  const {dateRange, startDate, endDate} = store;
+  const dateStore = useContext(DateIntervalContext);
+  const {dateRange, startDate, endDate} = dateStore;
 
-  const [timeRecords, setTimeRecords] = useState([] as TimeInterval[]);
-  const [editingRow, setEditingRow] = useState(-1);
-  const [state, setState] = useState(State.Loading);
+  const timeRecordsStore = useContext(TimeTableContext);
+  const {timeRecords, editingRow, state} = timeRecordsStore;
 
   useEffect(() => {
-    loadData()
-    .then(
-      (result) => {
-        setTimeRecords(result);
-        setState(State.Loaded);
-      }
-    )
-    .catch(error => {
-      setState(State.Error);
-    });
+    loadData();
   }, [props.employee, startDate, endDate]);
 
   async function loadData() {
-    return await fetchFunctionApi<TimeInterval[]>(`/TimeInterval/?employeeId=${props.employee.id}&dateStart=${store.getStartDateStr()}&dateEnd=${store.getEndDateStr()}`);
+    await timeRecordsStore.fetchTimeIntervals(dateStore.getStartDateStr(), dateStore.getEndDateStr());
   }
 
-  async function deleteRow(i: number, row: TimeInterval) {
-    const list = [...timeRecords];
-    list.splice(i, 1);
-    setTimeRecords(list);
-    setEditingRow(-1);
-    if (row.id) {
-      await deleteFunctionApi(`/TimeInterval/${row.id}`);
-    }
-  }
-
-  function addRow(i: number) {
-    const list = [...timeRecords];
-    const project = props.employee.projects[0];
-    //@ts-ignore
-    list.splice(i + 1, 0, {
-      employeeId: props.employee.id,
-      projectId: project.id,
-      project: project.title,
-      workTypeId: 1,
-      workType: "Разработка",
-      date: "",
-      duration: 0.25,
-      description: ""
-    });
-    setTimeRecords(list);
-    setEditingRow(i + 1);
-  }
-
-  function saveRow(i: number) {
-    setTimeRecords(timeRecords);
-    setEditingRow(-1);
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>, index: number) {
-    const { name, value } = e.target;
-    const list = [...timeRecords];
-    list[index][name] = value;
-    setTimeRecords(list);
-  };
-
-  function handleSelectIdChange(e: React.ChangeEvent<HTMLSelectElement>, index: number) {
-    const name = e.target.name;
-    const value = parseInt(e.target.value);
-    const list = [...timeRecords];
-    const text = e.target.options[value - 1].text;
-    list[index][name + "Id"] = value;
-    list[index][name] = text;
-    setTimeRecords(list);
-  };
-
-  function handleSelectChange(e: React.ChangeEvent<HTMLSelectElement>, index: number) {
-    const name = e.target.name;
-    const list = [...timeRecords];
-    list[index][name] = parseFloat(e.target.value);
-    setTimeRecords(list);
-  };
-
-  if (state === State.Loading) {
+  if (state === 'loading') {
     return <Typography>Loading...</Typography>
   }
-  else if (state === State.Error) {
+  else if (state === 'error') {
     return <Typography>Server unavailable</Typography>
   }
   else {
     let sum = 0;
     timeRecords.forEach(val => sum += val.duration);
 
-    const requiredTime = 8 * (dateRange == DateRange.Week ? 5 : dateRange == DateRange.Month ? 21 : 1);
+    const workingDays = (dateRange == DateRange.Week ? 5 : (dateRange == DateRange.Month ? 21 : 1));
+    const requiredTime = props.employee.workDayDuration * workingDays;
 
     return (
       <Paper style={{maxWidth: 1000}}>
@@ -131,18 +65,18 @@ function TimeTable(props: {employee: Employee}) {
           <TableBody>
             {timeRecords.map((row, i) => {
               return i == editingRow ? (
-                <TableRow key={row.id}>
+                <TableRow key={row.id || 0}>
                   <TableCell>
                     <SelectProject
                       projects={props.employee.projects}
                       value={row.projectId}
-                      onChange={(e) => handleSelectIdChange(e, i)}
+                      onChange={(e) => timeRecordsStore.handleSelectIdChange(e, i)}
                     />
                   </TableCell>
                   <TableCell>
                     <SelectWorkType
                       value={row.workTypeId}
-                      onChange={(e) => handleSelectIdChange(e, i)}
+                      onChange={(e) => timeRecordsStore.handleSelectIdChange(e, i)}
                     />
                   </TableCell>
                   <TableCell>
@@ -151,13 +85,13 @@ function TimeTable(props: {employee: Employee}) {
                       style={{maxWidth: 70}}
                       value={row.date}
                       size={10}
-                      onChange={(e) => handleInputChange(e, i)}
+                      onChange={(e) => timeRecordsStore.handleInputChange(e, i)}
                     />
                   </TableCell>
                   <TableCell>
                     <SelectTime
                       value={row.duration} 
-                      onChange={(e) => handleSelectChange(e, i)}
+                      onChange={(e) => timeRecordsStore.handleSelectChange(e, i)}
                     />
                   </TableCell>
                   <TableCell>
@@ -165,16 +99,16 @@ function TimeTable(props: {employee: Employee}) {
                       name="description"
                       value={row.description}
                       size={36}
-                      onChange={(e) => handleInputChange(e, i)}
+                      onChange={(e) => timeRecordsStore.handleInputChange(e, i)}
                     />
                   </TableCell>
                   <TableCell padding="none">
-                    <Button onClick={() => saveRow(i)}>
+                    <Button onClick={() => timeRecordsStore.saveRow(i)}>
                       <SaveIcon/>
                     </Button>
                   </TableCell>
                   <TableCell padding="none">
-                    <Button onClick={() => deleteRow(i, row)}>
+                    <Button onClick={() => timeRecordsStore.deleteRow(i, row)}>
                       <DeleteOutlineIcon/>
                     </Button>
                   </TableCell>
@@ -187,12 +121,12 @@ function TimeTable(props: {employee: Employee}) {
                   <TableCell>{row.duration + 'ч'}</TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell padding="none">
-                    <Button onClick={() => setEditingRow(i)}>
+                    <Button onClick={() => timeRecordsStore.setEditingRow(i)}>
                       <EditIcon/>
                     </Button>
                   </TableCell>
                   <TableCell padding="none">
-                    <Button onClick={() => addRow(i)}>
+                    <Button onClick={() => timeRecordsStore.addRow(i)}>
                       <AddIcon/>
                     </Button>
                   </TableCell>
