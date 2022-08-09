@@ -1,34 +1,36 @@
 export enum Seniority {
-    NotAvailable,
-    Junior,
-    JuniorMiddle,
-    Middle,
-    MiddleSenior,
-    Senior
+  NotAvailable,
+  Junior,
+  JuniorMiddle,
+  Middle,
+  MiddleSenior,
+  Senior
 };
 
 export enum PermissionLevel
 {
-    Default,
-    Manager
+  Default,
+  Manager
 }
 
 export interface Employee {
-    id: number;
-    fullName: string;
-    email: string;
-    password: string;
-    seniority: Seniority;
-    experience: number;
-    techStack: string;
-    created: string;
-    projects: Project[];
+  id: number;
+  fullName: string;
+  email: string;
+  password: string;
+  permissionLevel: PermissionLevel;
+  seniority: Seniority;
+  experience: number;
+  hourlyRate: number;
+  created: string;
+  workDayDuration: number;
+  projects?: Project[];
 }
 
 export interface Project {
-    id: number;
-    title: string;
-    archived: boolean;
-    employees?: Employee[];
+  id: number;
+  title: string;
+  archived: boolean;
+  employees?: Employee[];
 }
 

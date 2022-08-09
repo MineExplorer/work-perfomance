@@ -1,5 +1,5 @@
 export enum State {
-    Loading,
-    Loaded,
-    Error
+  Loading,
+  Loaded,
+  Error
 }
