@@ -45,11 +45,13 @@ namespace Infrastructure.Repositories
             }
 
             entity.ProjectId = timeInterval.ProjectId;
+            entity.WorkTypeId = timeInterval.WorkTypeId;
             entity.Duration = timeInterval.Duration;
             entity.Description = timeInterval.Description;
             entity.Date = timeInterval.Date;
             context.Update(entity);
             await context.SaveChangesAsync();
+
             return entity;
         }
 
